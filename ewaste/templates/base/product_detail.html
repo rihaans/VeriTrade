@@ -1,0 +1,128 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .card-glass {
+            background: rgba(255, 255, 255, 0.15);
+            /* Semi-transparent white */
+            backdrop-filter: blur(10px);
+            /* Blur effect */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            /* Subtle shadow */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            /* Light border */
+        }
+
+        .product-image img {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Make the card centered and ensure it fits well */
+        .single-product {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .go-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            /* Beautiful gradient */
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .go-back-btn:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            /* Reverse gradient on hover */
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+    </style>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" href="{% static 'assets/css/new.css' %}">
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <video class="video-bg" autoplay loop muted>
+        <source src="{% static 'assets/img/login-bg.mp4' %}" type="video/mp4">
+    </video>
+
+    <div class="container">
+        <div class="single-product card-glass">
+            <div class="row">
+                <div class="col-6">
+                    <div class="product-image">
+                        <div class="product-image-main">
+                            <img src="{{ product.product_image_1.url }}" alt="" id="product-main-image">
+                        </div>
+                        <div class="product-image-slider">
+                            <img src="{{ product.product_image_1.url }}" alt="" class="image-list">
+                            <img src="{{ product.product_image_2.url }}" alt="" class="image-list">
+                            <img src="{{ product.product_image_3.url }}" alt="" class="image-list">
+                            <img src="{{ product.product_image_4.url }}" alt="" class="image-list">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="product">
+                        <div class="product-title">
+                            <h2>{{ product.product_name }}</h2>
+                        </div>
+                        <div class="product-price">
+                            <span class="offer-price">${{ product.product_sell_price }}</span>
+                        </div>
+                        <div class="product-details">
+                            <h3>Description</h3>
+                            <p>{{ product.product_description }}</p>
+                        </div>
+                        <span class="divider"></span>
+                        <p>Currently you have : {{ user_credits.Credits }}</p>
+                        <div class="product-btn-group">
+                            {% if product.product_sell_price < user_credits.Credits %}
+                            <a href="{% url 'direct_buy' user.id product.product_id %}"><div class="button buy-now"><i class='bx bxs-zap'></i> Buy Now</div></a>
+    
+                            {% endif %}
+                            <a href="{% url 'add_to_cart' user.id product.product_id %}"><div class="button add-cart"><i class='bx bxs-cart'></i> Add to Cart</div></a>
+                            <a href="{% url 'home' user.id %}" class="go-back-btn">
+                                <i class='bx bx-arrow-back'></i> Go Back
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{% static 'assets/js/new.js' %}"></script>
+</body>
+</html>

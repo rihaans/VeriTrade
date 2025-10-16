@@ -1,0 +1,612 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Start up</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}  ">
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/slicknav.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/progressbar_barfiller.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/gijgo.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/animated-headline.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/themify-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/nice-select.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <style>
+        .buy-credits-btn {
+            background: linear-gradient(45deg, #ff7e5f, #feb47b);
+            /* Gradient effect */
+            color: white;
+            font-weight: bold;
+            border-radius: 25px;
+            padding: 10px 20px;
+            text-align: center;
+            display: inline-block;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+        }
+
+        .buy-credits-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #d32f2f;
+        }
+
+        .total {
+            text-align: right;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preloader-active">
+        <div class="preloader d-flex align-items-center justify-content-center">
+            <div class="preloader-inner position-relative">
+                <div class="preloader-circle"></div>
+                <div class="preloader-img pere-text">
+                    <img src="{% static 'assets/img/logo/loder.png' %}" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+    <header>
+        <!-- Header Start -->
+        <div class="header-area header-transparent">
+            <div class="main-header ">
+                <div class="header-bottom  header-sticky">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <!-- Logo -->
+                            <div class="col-xl-2 col-lg-2">
+                                <div class="logo">
+                                    <h1 style="color: aliceblue;">EWMS</h1>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-lg-10">
+                                <div class="menu-wrapper d-flex align-items-center justify-content-end">
+                                    <!-- Main-menu -->
+                                    <div class="main-menu d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation">
+                                                <li class="active"><a href="#"></a></li>
+                                                </li>
+                                                <li class="nav-item dropdown">
+                                                    <a class="nav-link dropdown-toggle" href="#" id="creditsDropdown"
+                                                        role="button" data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        🌕 <span id="creditBalance">{{ user_credits.Credits }}</span>
+                                                    </a>
+                                                    <div class="dropdown-menu" aria-labelledby="creditsDropdown">
+                                                        <a class="dropdown-item btn btn-success text-white fw-bold rounded-pill shadow-sm px-4"
+                                                            href="#" data-toggle="modal" data-target="#creditsModal">
+                                                            Buy Credits
+                                                        </a>
+                                                    </div>
+                                                </li>
+
+                                                <li class="dropdown">
+                                                    <img src="{% static 'assets/img/post/post_4.png' %}"
+                                                        alt="{% static 'assets/img/post/post_4.png' %}"
+                                                        class="profile-icon"> <span class="menu-dots">⫶</span>
+                                                    <ul style="margin:0px; padding:0px;" class="dropdown-menu">
+                                                        <li style="margin:0px; padding:0px;"><a
+                                                                href="{% url 'profile' user.id %} "
+                                                                class="btn btn3">Profile</a></li>
+                                                        <li style="margin:0px; padding:0px;"><a
+                                                                href="{% url 'logout' %}" class="btn btn3">Log out</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Header End -->
+    </header>
+
+    <main>
+        <!--? slider Area Start-->
+        <section class="slider-area ">
+            <div class="slider-active">
+                <!-- Single Slider -->
+                <div class="single-slider slider-height d-flex align-items-center">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-7 col-md-12">
+                                <div class="hero__caption">
+                                    <h1 data-animation="fadeInLeft" data-delay="0.2s">Electronic recycle<br> platform
+                                    </h1>
+                                    <p data-animation="fadeInLeft" data-delay="0.4s">Rapid technological advancements
+                                        lead to a surge in
+                                        outdated gadgets, contributing to e-waste.</p>
+                                    <a href="{% url 'sell' user.id %}" class="btn hero-btn" data-animation="fadeInLeft"
+                                        data-delay="0.7s">Sell</a>
+                                    <a href="#selling_products" data-toggle="modal" class="btn hero-btn"
+                                        data-animation="fadeInLeft" data-delay="0.7s">View
+                                        selling products</a>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <p>View the products you bought here</p>
+                                    <a href="#delivery_jobs" data-toggle="modal" class="btn hero-btn"
+                                        data-animation="fadeInLeft" data-delay="0.7s">Your Delivery Jobs</a>
+
+                                    <a href="#user_cart" data-toggle="modal" class="btn hero-btn"
+                                        data-animation="fadeInLeft" data-delay="0.7s">Cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="courses-area section-padding40 fix">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-xl-7 col-lg-8">
+                        <div class="section-tittle text-center mb-55">
+                            <h2>Browse What You Need</h2>
+                        </div>
+                    </div>
+                </div>
+                {% for category, products in categorized_products.items %}
+                {% if products %}
+                <h1>{{ category }}</h1>
+                <div class="courses-actives">
+                    {% for product in products %}
+                    <!-- Single -->
+                    <div class="properties pb-20">
+                        <div class="properties__card">
+                            <img style="width:100%; height: 200px; border-radius: 10px 10px 0px 0px;"
+                                src="{{ product.product_image_1.url }}" alt="{{ product.product_description }}">
+                            <div class="properties__caption">
+                                <h3>{{ product.product_name }}</h3>
+                                <div class="properties__footer d-flex justify-content-between align-items-center">
+                                    <div class="restaurant-name">
+                                        <p>Evaluated</p>
+                                    </div>
+                                    <div class="price">
+                                        <span>₹ {{ product.product_sell_price }}</span>
+                                    </div>
+                                </div>
+                                <a href="{% url 'product_detail' user.id product.product_id %}" class="btn hero-btn"
+                                    data-animation="fadeInLeft" data-delay="0.7s">Find out more</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Single -->
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="selling_products" tabindex="-1" role="dialog"
+            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle"><b style="font-size: 22px;">Your Selling
+                                Products</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% if user_products %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Condition</th>
+                                    <th>Evaluated</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in user_products %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ product.product_image_1.url }}" alt="Product Image" width="80px"
+                                            height="80px" class="img-thumbnail">
+                                    </td>
+                                    <td>{{ product.product_name }}</td>
+                                    <td>{{ product.product_description }}</td>
+                                    <td>
+                                        {% if product.product_sold %}
+                                        <span class="badge badge-success">sold</span>
+                                        {% else %}
+                                        <span class="badge badge-warning">not sold yet</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if product.product_evaluation_status %}
+                                        <span class="badge badge-success">Not Evaluated</span>
+                                        {% else %}
+                                        <span class="badge badge-warning">Evaluated</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p>No products found.</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="user_cart" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle"><b style="font-size: 22px;">Your Cart</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <table border="1">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr>
+                                    <td><img style="width:100%; height: 100px; border-radius: 10px 10px 10px 10px;"
+                                            src="{{ item.product.product_image_1.url }}"
+                                            alt="{{ product.product_description }}"></td>
+                                    <td>{{ item.product.product_name }}</td>
+                                    <td>${{ item.product.product_sell_price }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'delete_cart_item' user.id item.cart_id %}">
+                                            {% csrf_token %}
+                                            <button type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">Your cart is empty.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <h3>Total Price: ${{ total_price }}</h3>
+                        {% if total_price != 0 and total_price < user_credits.Credits %} <a
+                            href="{% url 'cart_to_buy' user.pk %}"><button type="button"
+                                class="btn btn-secondary">buy</button></a>
+
+                            {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Delivery Jobs Modal -->
+        <div class="modal fade" id="delivery_jobs" tabindex="-1" role="dialog" aria-labelledby="deliveryJobsTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deliveryJobsTitle"><b style="font-size: 22px;">Your Delivery
+                                Jobs</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Active Delivery Jobs (Status < 3) -->
+                        <h4>Active Delivery Jobs</h4>
+                        {% if active_delivery_jobs %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Buyer</th>
+                                    <th>Delivery Person</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in active_delivery_jobs %}
+                                <tr>
+                                    <td>{{ job.deliveryJob_product.product_name }}</td>
+                                    <td>{{ job.deliveryJob_buyer.user.username }}</td>
+                                    <td>
+                                        {% if job.deliveryJob_deliveryGuy %}
+                                        {{ job.deliveryJob_deliveryGuy.deliveryGuy_user.username }}
+                                        {% else %}
+                                        <span class="badge badge-warning">Not Assigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if job.deliveryJob_status == 0 %}
+                                        <span class="badge badge-warning">Pending</span>
+                                        {% elif job.deliveryJob_status == 1 %}
+                                        <span class="badge badge-primary">In Progress</span>
+                                        {% elif job.deliveryJob_status == 2 %}
+                                        <span class="badge badge-success">Completed</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">Unknown</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p>No active delivery jobs found.</p>
+                        {% endif %}
+
+                        <!-- Cancelled Delivery Jobs (Status == 3) -->
+                        <h4>Delivery Jobs Completed</h4>
+                        {% if cancelled_delivery_jobs %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Buyer</th>
+                                    <th>Delivery Person</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in cancelled_delivery_jobs %}
+                                <tr>
+                                    <td>{{ job.deliveryJob_product.product_name }}</td>
+                                    <td>{{ job.deliveryJob_buyer.user.username }}</td>
+                                    <td>
+                                        {% if job.deliveryJob_deliveryGuy %}
+                                        {{ job.deliveryJob_deliveryGuy.deliveryGuy_user.username }}
+                                        {% else %}
+                                        <span class="badge badge-warning">Not Assigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-danger">Cancelled</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <p>No Delivery Jobs Completed.</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </main>
+    <footer>
+        <div class="footer-wrappper footer-bg">
+            <!-- Footer Start-->
+            <div class="footer-area footer-padding">
+                <div class="container">
+                    <div class="row justify-content-between">
+                        <div class="col-xl-4 col-lg-5 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="single-footer-caption mb-30">
+                                    <!-- logo -->
+                                    <div class="footer-logo mb-25">
+                                        <a href="{% url 'Index' %}">
+                                            <h1 style="color: aliceblue;">E-waste</h1>
+                                        </a>
+                                    </div>
+                                    <div class="footer-tittle">
+                                        <div class="footer-pera">
+                                            <p>This is place where you can recycle electronic waste.</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-5 col-md-6 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>E-Waste: A Growing Threat to Our Planet</h4>
+                                    <p>
+                                        E-waste refers to discarded electronic devices like smartphones, laptops,
+                                        televisions, and batteries. Rapid technological advancements lead to a surge in
+                                        outdated gadgets, contributing to e-waste. Many of these devices contain toxic
+                                        materials such as lead, mercury, and cadmium, which harm the environment and
+                                        human health. Improper disposal causes soil, air, and water pollution,
+                                        increasing risks of lung diseases, brain damage, and skin disorders.Workers in
+                                        informal recycling sectors, particularly in developing countries, are most
+                                        affected due to unsafe dismantling practices</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- footer-bottom area -->
+                <div class="footer-bottom-area">
+                    <div class="container">
+                        <div class="footer-border">
+                            <div class="row d-flex align-items-center">
+                                <div class="col-xl-12 ">
+                                    <div class="footer-copy-right text-center">
+                                        <p>Hope you have great time browsing.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End-->
+        </div>
+    </footer>
+
+    <!-- Credits Modal -->
+    <div class="modal fade" id="creditsModal" tabindex="-1" role="dialog" aria-labelledby="creditsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Buy Credits</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Current Credits: {{ user_credits.Credits }}</p>
+                    <form id="buyCreditsForm" method="post" action="{% url 'buy_credits' request.user.pk %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="creditsAmount">Enter Credits:</label>
+                            <input type="number" class="form-control" id="creditsAmount" name="creditsAmount" min="1"
+                                required>
+                        </div>
+                        <p>Total Cost: <span id="totalCost">0</span></p>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" form="buyCreditsForm" class="btn btn-primary">Pay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Up -->
+    <div id="back-top">
+        <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+    </div>
+
+
+
+    <script>
+        document.getElementById('creditsAmount').addEventListener('input', function () {
+            var credits = Math.max(1, parseInt(this.value) || 1);
+            document.getElementById('totalCost').textContent = credits * 10;
+        });
+    </script>
+
+    <!-- JS here -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+
+    <script src="{% static './assets/js/vendor/modernizr-3.5.0.min.js' %}"></script>
+    <!-- Jquery, Popper, Bootstrap -->
+    <script src="{% static './assets/js/vendor/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static './assets/js/popper.min.js' %}"></script>
+    <script src="{% static './assets/js/bootstrap.min.js' %}"></script>
+    <!-- Jquery Mobile Menu -->
+    <script src="{% static './assets/js/jquery.slicknav.min.js' %}"></script>
+
+    <!-- Jquery Slick , Owl-Carousel Plugins -->
+    <script src="{% static './assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static './assets/js/slick.min.js' %}"></script>
+    <!-- One Page, Animated-HeadLin -->
+    <script src="{% static './assets/js/wow.min.js' %}"></script>
+    <script src="{% static './assets/js/animated.headline.js' %}"></script>
+    <script src="{% static './assets/js/jquery.magnific-popup.js' %}"></script>
+
+    <!-- Date Picker -->
+    <script src="{% static './assets/js/gijgo.min.js' %}"></script>
+    <!-- Nice-select, sticky -->
+    <script src="{% static './assets/js/jquery.nice-select.min.js' %}"></script>
+    <script src="{% static './assets/js/jquery.sticky.js' %}"></script>
+    <!-- Progress -->
+    <script src="{% static './assets/js/jquery.barfiller.js' %}"></script>
+
+    <!-- counter , waypoint,Hover Direction -->
+    <script src="{% static './assets/js/jquery.counterup.min.js' %}"></script>
+    <script src="{% static './assets/js/waypoints.min.js' %}"></script>
+    <script src="{% static './assets/js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static './assets/js/hover-direction-snake.min.js' %}"></script>
+
+    <!-- contact js -->
+    <script src="{% static './assets/js/contact.js' %}"></script>
+    <script src="{% static './assets/js/jquery.form.js' %}"></script>
+    <script src="{% static './assets/js/jquery.validate.min.js' %}"></script>
+    <script src="{% static './assets/js/mail-script.js' %}"></script>
+    <script src="{% static './assets/js/jquery.ajaxchimp.min.js' %}"></script>
+
+    <!-- Jquery Plugins, main Jquery -->
+    <script src="{% static './assets/js/plugins.js' %}"></script>
+    <script src="{% static './assets/js/main.js' %}"></script>
+
+</body>
+
+</html>
