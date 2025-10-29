@@ -24,24 +24,137 @@
     <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/nice-select.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-    <title>Signup Student</title>
+    <link rel="stylesheet" href="{% static 'assets/css/veritrade-modern.css' %}">
+    <title>Sign Up - VeriTrade</title>
 
     <style>
         .back-button {
             position: absolute;
             top: 20px;
             left: 20px;
-            background-color: #454646;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 10px 15px;
+            padding: 12px 20px;
             text-decoration: none;
-            font-size: 1.7rem;
-            font-weight: bold;
-            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-base);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .back-button:hover {
-            background-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        .login-form {
+            background: white;
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-2xl);
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .login-form h2 {
+            color: var(--gray-900);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .login-form .subtitle {
+            text-align: center;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        .login-body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .form-input {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-input label {
+            display: block;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-input input[type="text"],
+        .form-input input[type="email"],
+        .form-input input[type="password"] {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input input[type="submit"] {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .form-input input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .alert-message {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+
+        .registration {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .registration:hover {
+            color: var(--primary-color);
         }
     </style>
 </head>
@@ -62,56 +175,94 @@
     <!-- Register -->
     <main class="login-body" data-vide-bg="{% static 'assets/img/login-bg.mp4' %}">
 
-        <a href="{% url 'Index' %}" class="back-button">← Back to Home</a>
-        <!-- Login Admin -->
-        <form class="form-default" action="{% url 'signupForm' %}" method="POST">
-
-            <div class="login-form" style="overflow:hidden scroll; height:765px;">
-                <!-- logo-login -->
-
-                <h2>Registration Here</h2>
-
-                {% csrf_token %}
-                <div class="form-input">
-                    {% if message1 == 1 %}
-                    <p style="color: rgb(255, 127, 127); margin-bottom: 0px;">this email is already used for another
-                        account,
-                        please try another email </p>
-                    {% endif %}
-                    <p>{{ integrityerror }}</p>
-                    <p>{{ error }}</p>
-                </div>
-                <div class="form-input">
-                    <label for="name">First Name</label>
-                    <input type="text" placeholder="first name" name="first_name">
-                </div>
-                <div class="form-input">
-                    <label for="name">Last Name</label>
-                    <input type="text" placeholder="last name" name="last_name">
-                </div>
-                <div class="form-input">
-                    <label for="name">Username</label>
-                    <input type="text" placeholder="username" name="username">
-                </div>
-                <div class="form-input">
-                    <label for="name">Email Address</label>
-                    <input type="email" placeholder="email" name="email">
-                </div>
-
-                <div class="form-input">
-                    <label for="phone_number">Phone Number</label>
-                    <input type="text" placeholder="phone number" name="phone_number">
-                </div>
-                <div class="form-input">
-                    <label for="name">Password</label>
-                    <input type="password" placeholder="password" name="password">
-                </div>
-                <div class="form-input pt-30">
-                    <input type="submit" name="submit">
-                </div>
-        </form>
-        <a href="{% url 'loginForm' %}" class="registration">Already Have an account? Login Here
+        <a href="{% url 'Index' %}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back to Home
         </a>
+
+        <div class="login-form">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h1 class="nav-logo" style="font-size: 2rem; margin-bottom: 0.5rem;">VeriTrade</h1>
+            </div>
+
+            <h2>Create Account</h2>
+            <p class="subtitle">Join VeriTrade and start buying or selling</p>
+
+            <form class="form-default" action="{% url 'signupForm' %}" method="POST">
+                {% csrf_token %}
+
+                {% if message1 == 1 %}
+                <div class="alert-message">
+                    <i class="fas fa-exclamation-circle"></i> This email is already registered. Please use another email.
+                </div>
+                {% endif %}
+
+                {% if integrityerror %}
+                <div class="alert-message">
+                    <i class="fas fa-exclamation-circle"></i> {{ integrityerror }}
+                </div>
+                {% endif %}
+
+                {% if error %}
+                <div class="alert-message">
+                    <i class="fas fa-exclamation-circle"></i> {{ error }}
+                </div>
+                {% endif %}
+
+                <div class="form-input">
+                    <label for="first_name">
+                        <i class="fas fa-user" style="margin-right: 5px;"></i> First Name
+                    </label>
+                    <input type="text" placeholder="Enter your first name" name="first_name" required>
+                </div>
+
+                <div class="form-input">
+                    <label for="last_name">
+                        <i class="fas fa-user" style="margin-right: 5px;"></i> Last Name
+                    </label>
+                    <input type="text" placeholder="Enter your last name" name="last_name" required>
+                </div>
+
+                <div class="form-input">
+                    <label for="username">
+                        <i class="fas fa-at" style="margin-right: 5px;"></i> Username
+                    </label>
+                    <input type="text" placeholder="Choose a username" name="username" required>
+                </div>
+
+                <div class="form-input">
+                    <label for="email">
+                        <i class="fas fa-envelope" style="margin-right: 5px;"></i> Email Address
+                    </label>
+                    <input type="email" placeholder="Enter your email" name="email" required>
+                </div>
+
+                <div class="form-input">
+                    <label for="phone_number">
+                        <i class="fas fa-phone" style="margin-right: 5px;"></i> Phone Number
+                    </label>
+                    <input type="text" placeholder="Enter your phone number" name="phone_number" required>
+                </div>
+
+                <div class="form-input">
+                    <label for="password">
+                        <i class="fas fa-lock" style="margin-right: 5px;"></i> Password
+                    </label>
+                    <input type="password" placeholder="Create a strong password" name="password" required>
+                </div>
+
+                <div class="form-input">
+                    <input type="submit" name="submit" value="Create Account">
+                </div>
+
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <p style="color: var(--gray-600);">
+                        Already have an account?
+                        <a href="{% url 'loginForm' %}" style="color: var(--primary-color); font-weight: 600; text-decoration: none;">
+                            Login here
+                        </a>
+                    </p>
+                </div>
+            </form>
         </div>
         <!-- /end login form -->
     </main>

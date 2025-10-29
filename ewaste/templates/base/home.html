@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Start up</title>
+    <title>Home - VeriTrade</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.ico' %}  ">
@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/nice-select.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/veritrade-modern.css' %}">
     <style>
         .buy-credits-btn {
             background: linear-gradient(45deg, #ff7e5f, #feb47b);
@@ -96,15 +97,17 @@
     </div>
     <header>
         <!-- Header Start -->
-        <div class="header-area header-transparent">
-            <div class="main-header ">
-                <div class="header-bottom  header-sticky">
+        <div class="header-area header-modern">
+            <div class="main-header">
+                <div class="header-bottom header-sticky">
                     <div class="container-fluid">
                         <div class="row align-items-center">
                             <!-- Logo -->
                             <div class="col-xl-2 col-lg-2">
                                 <div class="logo">
-                                    <h1 style="color: aliceblue;">EWMS</h1>
+                                    <a href="{% url 'home' user.id %}" class="nav-logo">
+                                        VeriTrade
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-xl-10 col-lg-10">
@@ -112,33 +115,36 @@
                                     <!-- Main-menu -->
                                     <div class="main-menu d-none d-lg-block">
                                         <nav>
-                                            <ul id="navigation">
-                                                <li class="active"><a href="#"></a></li>
-                                                </li>
-                                                <li class="nav-item dropdown">
-                                                    <a class="nav-link dropdown-toggle" href="#" id="creditsDropdown"
-                                                        role="button" data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        🌕 <span id="creditBalance">{{ user_credits.Credits }}</span>
-                                                    </a>
-                                                    <div class="dropdown-menu" aria-labelledby="creditsDropdown">
-                                                        <a class="dropdown-item btn btn-success text-white fw-bold rounded-pill shadow-sm px-4"
-                                                            href="#" data-toggle="modal" data-target="#creditsModal">
-                                                            Buy Credits
-                                                        </a>
+                                            <ul id="navigation" class="nav-links" style="align-items: center;">
+                                                <li><a href="{% url 'home' user.id %}" class="nav-link">Home</a></li>
+                                                <li><a href="{% url 'sell' user.id %}" class="nav-link">Sell</a></li>
+                                                <li><a href="#user_cart" data-toggle="modal" class="nav-link">Cart</a></li>
+
+                                                <!-- Credits Display -->
+                                                <li>
+                                                    <div class="credit-display" style="cursor: pointer;" data-toggle="modal" data-target="#creditsModal">
+                                                        <i class="fas fa-coins"></i>
+                                                        <span id="creditBalance">{{ user_credits.Credits }}</span>
+                                                        <i class="fas fa-plus-circle" style="font-size: 0.9rem;"></i>
                                                     </div>
                                                 </li>
 
+                                                <!-- Profile Dropdown -->
                                                 <li class="dropdown">
-                                                    <img src="{% static 'assets/img/post/post_4.png' %}"
-                                                        alt="{% static 'assets/img/post/post_4.png' %}"
-                                                        class="profile-icon"> <span class="menu-dots">⫶</span>
+                                                    <a href="#" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--gray-100); border-radius: var(--radius-full);">
+                                                        <i class="fas fa-user-circle" style="font-size: 1.5rem; color: var(--primary-color);"></i>
+                                                        <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+                                                    </a>
                                                     <ul style="margin:0px; padding:0px;" class="dropdown-menu">
-                                                        <li style="margin:0px; padding:0px;"><a
-                                                                href="{% url 'profile' user.id %} "
-                                                                class="btn btn3">Profile</a></li>
-                                                        <li style="margin:0px; padding:0px;"><a
-                                                                href="{% url 'logout' %}" class="btn btn3">Log out</a>
+                                                        <li style="margin:0px; padding:0px;">
+                                                            <a href="{% url 'profile' user.id %}" class="btn btn3">
+                                                                <i class="fas fa-user"></i> Profile
+                                                            </a>
+                                                        </li>
+                                                        <li style="margin:0px; padding:0px;">
+                                                            <a href="{% url 'logout' %}" class="btn btn3">
+                                                                <i class="fas fa-sign-out-alt"></i> Log out
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </li>

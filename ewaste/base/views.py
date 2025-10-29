@@ -32,7 +32,7 @@ def signupForm(request):
 
         if User.objects.filter(email=email).exists():
             print("email already exists")
-            return render(request, "base/signup.html", {"message1": 1})
+            return render(request, "base/signup_new.html", {"message1": 1})
 
         try:
             print("trying")
@@ -62,11 +62,11 @@ def signupForm(request):
         except IntegrityError:
             return render(
                 request,
-                "base/signup.html",
+                "base/signup_new.html",
                 {"integrityerror": "A user with that username already exists."},
             )
 
-    return render(request, "base/signup.html")
+    return render(request, "base/signup_new.html")
 
 def loginForm(request):
     if request.method == "POST":
@@ -77,7 +77,7 @@ def loginForm(request):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             return render(
-                request, "base/login.html", {"incorrect": "Email not registered"}
+                request, "base/login_new.html", {"incorrect": "Email not registered"}
             )
 
         authenticated_user = authenticate(username=user.username, password=password)
@@ -89,15 +89,15 @@ def loginForm(request):
             else:
                 return render(
                     request,
-                    "base/login.html",
+                    "base/login_new.html",
                     {"incorrect": "User not active or unauthorized"},
                 )
         else:
             return render(
-                request, "base/login.html", {"incorrect": "Incorrect credentials"}
+                request, "base/login_new.html", {"incorrect": "Incorrect credentials"}
             )
 
-    return render(request, "base/login.html")
+    return render(request, "base/login_new.html")
 
 def logout_view(request):
     logout(request)
@@ -150,12 +150,12 @@ def home(request, pk):
     # 2. Orders with deliveryJob_status == 3 (Cancelled)
     cancelled_delivery_jobs = delivery_jobs.filter(deliveryJob_status=3)
 
-    return render(request, 'base/home.html', {
+    return render(request, 'base/home_new.html', {
         'categorized_products': categorized_products,
         'user_products': user_products,
         'current_userFull': current_userFull,
         'user_credits': user_credits,
-        'cart_items': user_cart, 
+        'cart_items': user_cart,
         'total_price': total_price,
         'active_delivery_jobs': active_delivery_jobs,  # Pass active delivery jobs
         'cancelled_delivery_jobs': cancelled_delivery_jobs,  # Pass cancelled delivery jobs

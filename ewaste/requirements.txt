@@ -1,0 +1,19 @@
+# Django and Core Dependencies
+Django==5.1
+python-dotenv==1.0.0
+
+# Database
+# SQLite is included with Python, no additional package needed
+
+# Geolocation
+geopy==2.4.1
+
+# Production Server (optional - gunicorn doesn't work on Windows)
+# gunicorn==21.2.0  # Unix/Linux only
+whitenoise==6.6.0
+
+# Development Tools (optional)
+python-decouple==3.8
+
+# Additional useful packages
+Pillow>=10.2.0  # For image handling (use >= for Python 3.13 compatibility)
