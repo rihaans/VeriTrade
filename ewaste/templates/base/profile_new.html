@@ -370,7 +370,7 @@
                 <h2 class="card-title">
                     <i class="fas fa-lock"></i> Change Password
                 </h2>
-                <form method="POST" action="{% url 'change_password' user.id %}">
+                <form method="POST" action="{% url 'change_password' %}">
                     {% csrf_token %}
                     <div class="form-group">
                         <label>Current Password</label>
@@ -412,7 +412,7 @@
                     <p class="danger-text">
                         Once you delete your account, there is no going back. Please be certain.
                     </p>
-                    <form method="POST" action="{% url 'delete_account' user.id %}" onsubmit="return confirm('Are you absolutely sure? This action cannot be undone.');">
+                    <form method="POST" action="{% url 'delete_account' %}" onsubmit="return confirm('Are you absolutely sure? This action cannot be undone.');">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">
                             <i class="fas fa-trash-alt"></i> Delete Account

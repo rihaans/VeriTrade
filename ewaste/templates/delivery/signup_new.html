@@ -341,7 +341,7 @@
 </head>
 <body>
     <div class="signup-container">
-        <a href="{% url 'index' %}" class="back-button">
+        <a href="{% url 'Index' %}" class="back-button">
             <i class="fas fa-arrow-left"></i> Back to Home
         </a>
 
@@ -360,7 +360,7 @@
             {% if message1 == 1 %}
             <div class="alert">
                 <i class="fas fa-exclamation-circle"></i>
-                <span>This email is already registered. Please use another email or <a href="{% url 'delivery_login' %}">log in</a>.</span>
+                <span>This email is already registered. Please use another email or <a href="{% url 'dlv_loginForm' %}">log in</a>.</span>
             </div>
             {% endif %}
 
@@ -431,7 +431,7 @@
             </form>
 
             <div class="form-footer">
-                Already have an account? <a href="{% url 'delivery_login' %}">Log In</a>
+                Already have an account? <a href="{% url 'dlv_loginForm' %}">Log In</a>
             </div>
         </div>
     </div>

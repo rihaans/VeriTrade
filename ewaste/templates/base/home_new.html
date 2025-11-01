@@ -847,5 +847,167 @@
             }
         }
     </script>
+
+    <!-- My Listings Modal -->
+    <div class="modal" id="sellingProductsModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-box"></i> My Listings</h2>
+                <span class="close-modal" onclick="closeModal('sellingProductsModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                {% if user_products %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--light); text-align: left;">
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Image</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Name</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Description</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Status</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Evaluated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in user_products %}
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 1rem;">
+                                    <img src="{{ product.product_image_1.url }}" alt="{{ product.product_name }}"
+                                         style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                                </td>
+                                <td style="padding: 1rem; font-weight: 600;">{{ product.product_name }}</td>
+                                <td style="padding: 1rem; color: var(--gray);">{{ product.product_description|truncatewords:10 }}</td>
+                                <td style="padding: 1rem;">
+                                    {% if product.product_sold %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(16, 185, 129, 0.1); color: var(--secondary); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Sold</span>
+                                    {% else %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(245, 158, 11, 0.1); color: var(--accent); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Active</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 1rem;">
+                                    {% if product.product_evaluation_status %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(16, 185, 129, 0.1); color: var(--secondary); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Evaluated</span>
+                                    {% else %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(239, 68, 68, 0.1); color: var(--danger); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Pending</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-box-open" style="font-size: 4rem; color: var(--gray); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--gray); font-size: 1.125rem;">You haven't listed any products yet.</p>
+                    <a href="{% url 'sell' user.id %}" class="btn btn-primary" style="margin-top: 1rem; display: inline-flex;">
+                        <i class="fas fa-plus"></i> List Your First Product
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div class="modal" id="deliveryModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-truck"></i> My Orders</h2>
+                <span class="close-modal" onclick="closeModal('deliveryModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Active Orders -->
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark);">
+                    <i class="fas fa-clock"></i> Active Orders
+                </h3>
+                {% if active_delivery_jobs %}
+                <div style="overflow-x: auto; margin-bottom: 2rem;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--light); text-align: left;">
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Product</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Seller</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Delivery Person</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in active_delivery_jobs %}
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 1rem; font-weight: 600;">{{ job.deliveryJob_product.product_name }}</td>
+                                <td style="padding: 1rem;">{{ job.deliveryJob_buyer.user.username }}</td>
+                                <td style="padding: 1rem;">
+                                    {% if job.deliveryJob_deliveryGuy %}
+                                    {{ job.deliveryJob_deliveryGuy.deliveryGuy_user.username }}
+                                    {% else %}
+                                    <span style="color: var(--gray);">Not assigned</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 1rem;">
+                                    {% if job.deliveryJob_status == 0 %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(245, 158, 11, 0.1); color: var(--accent); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Pending Pickup</span>
+                                    {% elif job.deliveryJob_status == 1 %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(99, 102, 241, 0.1); color: var(--primary); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">In Transit</span>
+                                    {% elif job.deliveryJob_status == 2 %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(16, 185, 129, 0.1); color: var(--secondary); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Out for Delivery</span>
+                                    {% else %}
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(100, 116, 139, 0.1); color: var(--gray); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Unknown</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 2rem; background: var(--light); border-radius: 12px; margin-bottom: 2rem;">
+                    <p style="color: var(--gray);">No active orders at the moment.</p>
+                </div>
+                {% endif %}
+
+                <!-- Completed Orders -->
+                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark);">
+                    <i class="fas fa-check-circle"></i> Completed Orders
+                </h3>
+                {% if cancelled_delivery_jobs %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--light); text-align: left;">
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Product</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Seller</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Delivery Person</th>
+                                <th style="padding: 1rem; border-bottom: 2px solid #e2e8f0;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in cancelled_delivery_jobs %}
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 1rem; font-weight: 600;">{{ job.deliveryJob_product.product_name }}</td>
+                                <td style="padding: 1rem;">{{ job.deliveryJob_buyer.user.username }}</td>
+                                <td style="padding: 1rem;">
+                                    {% if job.deliveryJob_deliveryGuy %}
+                                    {{ job.deliveryJob_deliveryGuy.deliveryGuy_user.username }}
+                                    {% else %}
+                                    <span style="color: var(--gray);">Not assigned</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 1rem;">
+                                    <span style="padding: 0.375rem 0.75rem; background: rgba(16, 185, 129, 0.1); color: var(--secondary); border-radius: 50px; font-size: 0.875rem; font-weight: 600;">Delivered</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div style="text-align: center; padding: 2rem; background: var(--light); border-radius: 12px;">
+                    <p style="color: var(--gray);">No completed orders yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>

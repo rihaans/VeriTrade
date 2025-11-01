@@ -390,7 +390,8 @@ def buy_credits(request, pk):
     user = get_object_or_404(User, pk=pk)
     
     if request.method == 'POST':
-        credits_amount = int(request.POST.get('creditsAmount', 0))
+        credits_amount_str = request.POST.get('creditsAmount', '0')
+        credits_amount = int(credits_amount_str) if credits_amount_str else 0
         user_credits, created = userCredits.objects.get_or_create(user=user)
         user_credits.Credits += credits_amount
         user_credits.save()
