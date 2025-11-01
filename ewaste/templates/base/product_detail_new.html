@@ -1,0 +1,547 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.product_name }} - VeriTrade</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--light);
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--gray);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .product-detail {
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            padding: 3rem;
+        }
+
+        /* Image Gallery */
+        .gallery {
+            position: sticky;
+            top: 100px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            background: var(--light);
+            position: relative;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .main-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .verified-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 50px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            background: var(--light);
+        }
+
+        .thumbnail:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .thumbnail.active {
+            border-color: var(--primary);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Product Info */
+        .product-info h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-section {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .credits-info {
+            color: var(--gray);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .your-credits {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-top: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .description-section {
+            margin: 2rem 0;
+        }
+
+        .description-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .description-section p {
+            color: var(--gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .spec-item {
+            background: var(--light);
+            padding: 1.25rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .spec-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .spec-details {
+            flex: 1;
+        }
+
+        .spec-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .spec-value {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1.25rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            box-shadow: 0 5px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: white;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .insufficient-credits {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .gallery {
+                position: static;
+            }
+
+            .main-image {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-info h1 {
+                font-size: 2rem;
+            }
+
+            .price {
+                font-size: 2.5rem;
+            }
+
+            .specs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .thumbnails {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="{% url 'home' user.id %}" class="logo">VeriTrade</a>
+            <a href="{% url 'home' user.id %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Products
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="product-detail">
+            <div class="product-grid">
+                <!-- Image Gallery -->
+                <div class="gallery">
+                    <div class="main-image">
+                        <img src="{{ product.product_image_1.url }}" alt="{{ product.product_name }}" id="mainImage">
+                        <div class="verified-overlay">
+                            <i class="fas fa-check-circle"></i> Quality Verified
+                        </div>
+                    </div>
+                    <div class="thumbnails">
+                        <div class="thumbnail active" onclick="changeImage('{{ product.product_image_1.url }}', this)">
+                            <img src="{{ product.product_image_1.url }}" alt="Image 1">
+                        </div>
+                        {% if product.product_image_2 %}
+                        <div class="thumbnail" onclick="changeImage('{{ product.product_image_2.url }}', this)">
+                            <img src="{{ product.product_image_2.url }}" alt="Image 2">
+                        </div>
+                        {% endif %}
+                        {% if product.product_image_3 %}
+                        <div class="thumbnail" onclick="changeImage('{{ product.product_image_3.url }}', this)">
+                            <img src="{{ product.product_image_3.url }}" alt="Image 3">
+                        </div>
+                        {% endif %}
+                        {% if product.product_image_4 %}
+                        <div class="thumbnail" onclick="changeImage('{{ product.product_image_4.url }}', this)">
+                            <img src="{{ product.product_image_4.url }}" alt="Image 4">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info">
+                    <span class="product-category">
+                        <i class="fas fa-tag"></i> {{ product.product_category }}
+                    </span>
+                    <h1>{{ product.product_name }}</h1>
+
+                    <div class="price-section">
+                        <div class="price">₹{{ product.product_sell_price }}</div>
+                        <div class="credits-info">
+                            <i class="fas fa-info-circle"></i>
+                            Price in Credits: {{ product.product_sell_price }} Credits
+                        </div>
+                        <div class="your-credits">
+                            <i class="fas fa-wallet"></i>
+                            Your Balance: {{ user_credits.Credits }} Credits
+                        </div>
+                    </div>
+
+                    <div class="description-section">
+                        <h3><i class="fas fa-align-left"></i> Description</h3>
+                        <p>{{ product.product_description }}</p>
+                    </div>
+
+                    <div class="specs-grid">
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="spec-details">
+                                <div class="spec-label">Purchase Date</div>
+                                <div class="spec-value">{{ product.product_bought_date|date:"M d, Y" }}</div>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="spec-details">
+                                <div class="spec-label">Condition</div>
+                                <div class="spec-value">Quality Verified</div>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="spec-details">
+                                <div class="spec-label">Quality Score</div>
+                                <div class="spec-value">{{ product.product_evaluation_score }}/10</div>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="spec-details">
+                                <div class="spec-label">Warranty</div>
+                                <div class="spec-value">Protected</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        {% if product.product_sell_price <= user_credits.Credits %}
+                            <a href="{% url 'direct_buy' user.id product.product_id %}" class="btn btn-primary">
+                                <i class="fas fa-bolt"></i> Buy Now
+                            </a>
+                            <a href="{% url 'add_to_cart' user.id product.product_id %}" class="btn btn-outline">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </a>
+                        {% else %}
+                            <button class="btn btn-primary" disabled>
+                                <i class="fas fa-lock"></i> Insufficient Credits
+                            </button>
+                            <a href="{% url 'home' user.id %}" class="btn btn-outline">
+                                <i class="fas fa-coins"></i> Buy Credits
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    {% if product.product_sell_price > user_credits.Credits %}
+                    <div class="insufficient-credits">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        You need {{ product.product_sell_price|add:"-"|add:user_credits.Credits|cut:"-" }} more credits to purchase this item.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeImage(url, element) {
+            document.getElementById('mainImage').src = url;
+
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+
+            // Add active class to clicked thumbnail
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>

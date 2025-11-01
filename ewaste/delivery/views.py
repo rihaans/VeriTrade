@@ -23,7 +23,7 @@ def get_location(address):
     return None, None
 
 def dlv_home(request,pk):
-    return render(request, 'delivery/home.html')
+    return render(request, 'delivery/home_new.html')
 def dlv_signup(request):
     if request.method == "POST":
         first_name = request.POST.get("first_name")
@@ -55,16 +55,16 @@ def dlv_signup(request):
                 return redirect('dlv_loginForm')
             else:
                 # If email exists, return error message
-                message1 = "A user with this email already exists."
-                return render(request, "delivery/signup.html", {"message1": message1})
+                message1 = 1
+                return render(request, "delivery/signup_new.html", {"message1": message1})
 
         except IntegrityError:
             # Handle database-related errors
-            message1 = "There was an error processing your request. Please try again."
-            return render(request, "delivery/signup.html", {"message1": message1})
+            message1 = 1
+            return render(request, "delivery/signup_new.html", {"message1": message1})
 
     # Render the signup form if not a POST request
-    return render(request, "delivery/signup.html")
+    return render(request, "delivery/signup_new.html")
 
 
 def dlv_loginForm(request):
@@ -78,7 +78,7 @@ def dlv_loginForm(request):
             print("eval user exist and the id:", dlv_user)
         except User.DoesNotExist:
             return render(
-                request, "delivery/login.html", {"incorrect": "Email not registered"}
+                request, "delivery/login_new.html", {"incorrect": "Email not registered"}
             )
 
         authenticated_user = authenticate(username=user.username, password=password)
@@ -90,15 +90,15 @@ def dlv_loginForm(request):
             else:
                 return render(
                         request,
-                        "delivery/login.html",
+                        "delivery/login_new.html",
                         {"incorrect": "User not active or unauthorized"},
                 )
         else:
             return render(
-                request, "delivery/login.html", {"incorrect": "Incorrect credentials"}
+                request, "delivery/login_new.html", {"incorrect": "Incorrect credentials"}
             )
 
-    return render(request, "delivery/login.html")
+    return render(request, "delivery/login_new.html")
 
 def dlv_logout(request):
     logout(request)

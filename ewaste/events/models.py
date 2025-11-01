@@ -72,7 +72,7 @@ class product(models.Model):
     product_image_2 = models.ImageField(upload_to='product_photos/', null=True, blank=True)
     product_image_3 = models.ImageField(upload_to='product_photos/', null=True, blank=True)
     product_image_4 = models.ImageField(upload_to='product_photos/', null=True, blank=True)
-
+ 
     product_bought_price = models.IntegerField(null=True, default=0)
     product_bought_date = models.DateTimeField(null=True, blank=True)
     

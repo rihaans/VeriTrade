@@ -113,7 +113,7 @@ def profile(request, pk):
     except userFull.DoesNotExist:
         profile = None  # Handle missing profile gracefully
 
-    return render(request, "base/profile.html", {"user": user, "profile": profile})
+    return render(request, "base/profile_new.html", {"user": user, "profile": profile})
 
 def home(request, pk):
     try:
@@ -278,13 +278,13 @@ def sell(request, pk):
         return redirect("home", pk=pk)  # Redirect to home page
 
     print("Work not done - rendering sell page")
-    return render(request, "base/sell.html", {"seller": seller, "product_categories": PRODUCT_CATEGORIES})
+    return render(request, "base/sell_new.html", {"seller": seller, "product_categories": PRODUCT_CATEGORIES})
 
 def product_detail(request, pk, pk2):
     current_userFull = userFull.objects.get(user=pk)
     product_obj = get_object_or_404(product, product_id=pk2)
     user_credits, created = userCredits.objects.get_or_create(user_id=pk, defaults={"Credits": 0})
-    return render(request, 'base/product_detail.html', {'product': product_obj, 'user': current_userFull.user, "user_credits" : user_credits})
+    return render(request, 'base/product_detail_new.html', {'product': product_obj, 'user': current_userFull.user, "user_credits" : user_credits})
 
 @login_required
 def add_to_cart(request, pk, pk2):

@@ -15,7 +15,7 @@ from django.urls import reverse
 
 # Create your views here.
 def eval_home(request,pk):
-     return render(request, 'eval/home.html')
+     return render(request, 'eval/home_new.html')
 
 def eval_loginForm(request):
      if request.method == "POST":
@@ -28,7 +28,7 @@ def eval_loginForm(request):
                print("eval user exist and the id:", eval_user)
           except User.DoesNotExist:
                return render(
-                    request, "eval/login.html", {"incorrect": "Email not registered"}
+                    request, "eval/login_new.html", {"incorrect": "Email not registered"}
                )
 
           authenticated_user = authenticate(username=user.username, password=password)
@@ -40,15 +40,15 @@ def eval_loginForm(request):
                else:
                     return render(
                          request,
-                         "eval/login.html",
+                         "eval/login_new.html",
                          {"incorrect": "User not active or unauthorized"},
                     )
           else:
                return render(
-                    request, "eval/login.html", {"incorrect": "Incorrect credentials"}
+                    request, "eval/login_new.html", {"incorrect": "Incorrect credentials"}
                )
 
-     return render(request, "eval/login.html")
+     return render(request, "eval/login_new.html")
 
 def eval_signup(request):
      if request.method == "POST":
@@ -81,16 +81,16 @@ def eval_signup(request):
                     return redirect('eval_loginForm')
                else:
                     # If email exists, return error message
-                    message1 = "A user with this email already exists."
-                    return render(request, "eval/signup.html", {"message1": message1})
+                    message1 = 1
+                    return render(request, "eval/signup_new.html", {"message1": message1})
 
           except IntegrityError:
                # Handle database-related errors
-               message1 = "There was an error processing your request. Please try again."
-               return render(request, "eval/signup.html", {"message1": message1})
+               message1 = 1
+               return render(request, "eval/signup_new.html", {"message1": message1})
 
      # Render the signup form if not a POST request
-     return render(request, "eval/signup.html")
+     return render(request, "eval/signup_new.html")
 
 def eval_logout(request):
      logout(request)
