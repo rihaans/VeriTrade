@@ -40,7 +40,7 @@ written to an append-only ledger.
 
 ```
 veritrade/
-├── veritrade/         Project config (settings, root urls, wsgi/asgi)
+├── config/            Project config (settings, root urls, wsgi/asgi)
 ├── events/            The domain core
 │   ├── models.py          Roles, products, orders, deliveries, credit ledger
 │   ├── services/          All business logic, transaction-safe:
