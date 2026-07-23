@@ -63,9 +63,9 @@ if not DEBUG and not ALLOWED_HOSTS:
 # Required by Django 4+ for cross-origin POSTs (must include the scheme).
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
-ROOT_URLCONF = "ewaste.urls"
-WSGI_APPLICATION = "ewaste.wsgi.application"
-ASGI_APPLICATION = "ewaste.asgi.application"
+ROOT_URLCONF = "veritrade.urls"
+WSGI_APPLICATION = "veritrade.wsgi.application"
+ASGI_APPLICATION = "veritrade.asgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 

@@ -39,8 +39,8 @@ written to an append-only ledger.
 ## Architecture
 
 ```
-ewaste/
-├── ewaste/            Project config (settings, root urls, wsgi/asgi)
+veritrade/
+├── veritrade/         Project config (settings, root urls, wsgi/asgi)
 ├── events/            The domain core
 │   ├── models.py          Roles, products, orders, deliveries, credit ledger
 │   ├── services/          All business logic, transaction-safe:
@@ -75,7 +75,7 @@ concurrent requests cannot double-spend, double-sell, or double-pay.
 Requires **Python 3.12+**.
 
 ```bash
-cd ewaste
+cd veritrade
 
 # 1. Create a virtual environment and install dependencies
 python -m venv .venv
@@ -118,7 +118,7 @@ queue; as the courier to run deliveries. Create an admin with
 ## Testing
 
 ```bash
-cd ewaste
+cd veritrade
 python manage.py test          # ~80 tests, runs in ~2s
 ```
 
