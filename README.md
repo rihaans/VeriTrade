@@ -39,7 +39,7 @@ written to an append-only ledger.
 ## Architecture
 
 ```
-veritrade/
+VeriTrade/            Repo root — also the Django project root (holds manage.py)
 ├── config/            Project config (settings, root urls, wsgi/asgi)
 ├── events/            The domain core
 │   ├── models.py          Roles, products, orders, deliveries, credit ledger
@@ -74,9 +74,9 @@ concurrent requests cannot double-spend, double-sell, or double-pay.
 
 Requires **Python 3.12+**.
 
-```bash
-cd veritrade
+Run everything from the repo root.
 
+```bash
 # 1. Create a virtual environment and install dependencies
 python -m venv .venv
 .venv/Scripts/activate        # Windows
@@ -84,7 +84,7 @@ python -m venv .venv
 pip install -r requirements.txt
 
 # 2. Configure (the defaults are fine for local work)
-cp ../.env.example .env
+cp .env.example .env
 
 # 3. Set up the database
 python manage.py migrate
@@ -118,7 +118,6 @@ queue; as the courier to run deliveries. Create an admin with
 ## Testing
 
 ```bash
-cd veritrade
 python manage.py test          # ~80 tests, runs in ~2s
 ```
 

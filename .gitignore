@@ -23,9 +23,9 @@ db.sqlite3-journal
 db.sqlite3-wal
 db.sqlite3-shm
 # collectstatic output (STATIC_ROOT); source assets live in events/static/
-/veritrade/staticfiles/
-/veritrade/media/
-!/veritrade/media/.gitkeep
+/staticfiles/
+/media/
+!/media/.gitkeep
 
 # Environment
 .env
