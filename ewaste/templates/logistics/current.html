@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Delivery partner</p>
+    <h1>Current delivery</h1>
+  </div>
+  <a class="btn btn--ghost" href="{% url 'logistics:queue' %}">Available jobs</a>
+</div>
+
+{% if delivery %}
+  {% with item=delivery.order_item %}
+    <div class="split">
+      <div class="stack-lg">
+        <section class="panel certificate">
+          <div class="cluster cluster-between">
+            <div>
+              <p class="eyebrow">{{ item.product.get_category_display }}</p>
+              <h2 class="mt-2">{{ item.product.name }}</h2>
+              <p class="small muted mt-2 num">ORDER {{ item.order.reference }}</p>
+            </div>
+            <span class="pill pill--active">{{ delivery.get_status_display }}</span>
+          </div>
+
+          <div class="rail">
+            <div class="rail__step" data-done="true">Assigned</div>
+            <div class="rail__step" data-done="{% if delivery.status == 'PICKED_UP' %}true{% else %}false{% endif %}">Picked up</div>
+            <div class="rail__step" data-done="false">Delivered</div>
+          </div>
+        </section>
+
+        <section class="route">
+          <div class="route__leg">
+            <h4>Collect from</h4>
+            <p class="bold">{{ item.seller.display_name }}</p>
+            {% if item.seller.has_address %}
+              <p class="small muted mt-2">{{ item.seller.full_address }}</p>
+            {% else %}
+              <p class="small danger mt-2">No address on file. Contact support.</p>
+            {% endif %}
+            {% if item.seller.phone_number %}
+              <p class="small num mt-2">{{ item.seller.phone_number }}</p>
+            {% endif %}
+          </div>
+
+          <div class="route__leg">
+            <h4>Deliver to</h4>
+            <p class="bold">{{ item.order.buyer.display_name }}</p>
+            {% if item.order.buyer.has_address %}
+              <p class="small muted mt-2">{{ item.order.buyer.full_address }}</p>
+            {% else %}
+              <p class="small danger mt-2">No address on file. Contact support.</p>
+            {% endif %}
+            {% if item.order.buyer.phone_number %}
+              <p class="small num mt-2">{{ item.order.buyer.phone_number }}</p>
+            {% endif %}
+          </div>
+        </section>
+      </div>
+
+      <aside class="stack-lg">
+        <div class="panel">
+          <p class="eyebrow">Next step</p>
+
+          {% if delivery.status == Status.ASSIGNED %}
+            <p class="small muted mt-4">
+              Collect the item from the seller, then mark it picked up.
+            </p>
+            <form method="post" action="{% url 'logistics:pick_up' %}" class="mt-4" data-guard-submit>
+              {% csrf_token %}
+              <button class="btn btn--primary btn--block btn--lg" type="submit"
+                      data-busy-label="Updating…">Mark as picked up</button>
+            </form>
+
+          {% elif delivery.status == Status.PICKED_UP %}
+            <p class="small muted mt-4">
+              Hand the item to the buyer, then confirm. This releases
+              <span class="num">{{ currency_symbol }}{{ item.unit_price }}</span>
+              to the seller and cannot be undone.
+            </p>
+            <form method="post" action="{% url 'logistics:deliver' %}" class="mt-4"
+                  data-confirm="Confirm delivery? This pays the seller and cannot be undone."
+                  data-guard-submit>
+              {% csrf_token %}
+              <button class="btn btn--primary btn--block btn--lg" type="submit"
+                      data-busy-label="Confirming…">Confirm delivery</button>
+            </form>
+          {% endif %}
+        </div>
+
+        <div class="panel">
+          <p class="eyebrow">Job detail</p>
+          <dl class="spec mt-4">
+            <dt>Assigned</dt><dd class="num">{{ delivery.assigned_at|date:"Y-m-d H:i" }}</dd>
+            {% if delivery.picked_up_at %}
+              <dt>Picked up</dt><dd class="num">{{ delivery.picked_up_at|date:"Y-m-d H:i" }}</dd>
+            {% endif %}
+            <dt>Value</dt><dd class="num">{{ currency_symbol }}{{ item.unit_price }}</dd>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  {% endwith %}
+{% else %}
+  <div class="empty">
+    <p class="empty__mark">Idle</p>
+    <h3>You have no active delivery</h3>
+    <p class="small">Claim a job from the queue to get moving.</p>
+    <a class="btn btn--primary mt-4" href="{% url 'logistics:queue' %}">Available jobs</a>
+  </div>
+{% endif %}
+{% endblock %}

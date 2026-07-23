@@ -1,0 +1,12 @@
+{# Status pill for a product. Expects `product`. #}
+{% if product.status == "LISTED" %}
+  <span class="pill pill--verified">Listed</span>
+{% elif product.status == "PENDING" %}
+  <span class="pill pill--pending">Awaiting evaluation</span>
+{% elif product.status == "EVALUATING" %}
+  <span class="pill pill--active">Being evaluated</span>
+{% elif product.status == "REJECTED" %}
+  <span class="pill pill--danger">Rejected</span>
+{% elif product.status == "SOLD" %}
+  <span class="pill pill--muted">Sold</span>
+{% endif %}

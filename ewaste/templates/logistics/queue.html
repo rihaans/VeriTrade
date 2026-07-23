@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Delivery partner</p>
+    <h1>Available deliveries</h1>
+  </div>
+  {% if current_delivery %}
+    <a class="btn btn--primary" href="{% url 'logistics:current' %}">Back to current job</a>
+  {% endif %}
+</div>
+
+{% if current_delivery %}
+  <div class="alert alert--info mb-6">
+    <span class="alert__text">
+      You are carrying <strong>{{ current_delivery.order_item.product.name }}</strong>.
+      Complete it before claiming another.
+    </span>
+  </div>
+{% endif %}
+
+{% if page_obj.object_list %}
+  <div class="stack">
+    {% for delivery in page_obj %}
+      {% with item=delivery.order_item %}
+        <article class="job">
+          <div class="job__thumb">
+            {% with image=item.product.primary_image %}
+              {% if image %}<img src="{{ image.image.url }}" alt="" loading="lazy">{% endif %}
+            {% endwith %}
+          </div>
+
+          <div>
+            <p class="card__meta">{{ item.product.get_category_display }}</p>
+            <p class="job__title">{{ item.product.name }}</p>
+            <p class="tiny faint num mt-2">ORDER {{ item.order.reference }}</p>
+            <div class="cluster mt-2 small muted">
+              <span>From <strong>{{ item.seller.city|default:"address on file" }}</strong></span>
+              <span aria-hidden="true">&rarr;</span>
+              <span>To <strong>{{ item.order.buyer.city|default:"address on file" }}</strong></span>
+            </div>
+          </div>
+
+          <div class="right">
+            {% if current_delivery %}
+              <button class="btn btn--sm" type="button" disabled>Claim</button>
+            {% else %}
+              <form method="post" action="{% url 'logistics:claim' delivery.pk %}" data-guard-submit>
+                {% csrf_token %}
+                <button class="btn btn--primary btn--sm" type="submit"
+                        data-busy-label="Claiming…">Claim</button>
+              </form>
+            {% endif %}
+          </div>
+        </article>
+      {% endwith %}
+    {% endfor %}
+  </div>
+  {% include "partials/pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty">
+    <p class="empty__mark">Queue clear</p>
+    <h3>No deliveries waiting</h3>
+    <p class="small">Every purchased item has a courier assigned. Check back shortly.</p>
+  </div>
+{% endif %}
+{% endblock %}

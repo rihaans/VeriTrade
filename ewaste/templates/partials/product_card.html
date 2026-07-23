@@ -1,0 +1,39 @@
+{# A listing in the catalogue grid. Expects `product`. #}
+<article class="card certificate">
+  <div class="card__media">
+    {% with image=product.primary_image %}
+      {% if image %}
+        <img src="{{ image.image.url }}" alt="{{ product.name }}" loading="lazy" width="400" height="300">
+      {% else %}
+        <div class="card__placeholder">No photo</div>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="card__body">
+    <p class="card__meta">{{ product.get_category_display }}</p>
+    <h3 class="card__title">
+      <a href="{% url 'marketplace:product_detail' product.pk %}">{{ product.name }}</a>
+    </h3>
+
+    <div class="card__foot">
+      <div class="price">
+        <span class="price__now">{{ currency_symbol }}{{ product.price }}</span>
+        {% if product.discount_percent %}
+          <span class="price__was">{{ currency_symbol }}{{ product.listed_price }}</span>
+        {% endif %}
+      </div>
+
+      {% if product.evaluation_score is not None %}
+        <div>
+          <div class="score" style="--score: {{ product.evaluation_score }}"
+               data-band="{% if product.evaluation_score >= 70 %}good{% elif product.evaluation_score >= 40 %}fair{% else %}poor{% endif %}"
+               role="img" aria-label="Condition score {{ product.evaluation_score }} out of 100">
+            <span class="score__value">{{ product.evaluation_score }}</span>
+          </div>
+          <p class="score-legend">Graded</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</article>

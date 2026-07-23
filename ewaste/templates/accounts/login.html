@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth">
+  <div class="auth__aside">
+    <p class="eyebrow">Welcome back</p>
+    <h1 style="font-size:var(--size-2xl)">One account,<br>every role.</h1>
+    <p class="lede mt-4">
+      Members, evaluators, and delivery partners all sign in here. You will land
+      on the dashboard that belongs to your account.
+    </p>
+
+    <div class="panel certificate mt-6">
+      <dl class="spec">
+        <dt>Members</dt><dd>Browse, buy, sell</dd>
+        <dt>Evaluators</dt><dd>Grade incoming devices</dd>
+        <dt>Couriers</dt><dd>Collect and deliver</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="auth__card">
+    <p class="eyebrow">Sign in</p>
+    <h2 class="mt-4">Welcome back</h2>
+
+    <form method="post" class="mt-6" novalidate>
+      {% csrf_token %}
+      {% include "partials/form_errors.html" with form=form %}
+
+      {% include "partials/field.html" with field=form.username %}
+      {% include "partials/field.html" with field=form.password %}
+
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+      <button class="btn btn--primary btn--block btn--lg mt-6" type="submit">Sign in</button>
+    </form>
+
+    <p class="small muted mt-6 center">
+      No account yet? <a href="{% url 'accounts:signup' %}">Create one</a>
+    </p>
+
+    <hr>
+
+    <p class="eyebrow eyebrow--plain mb-4">Joining as staff?</p>
+    <div class="role-switch">
+      <a href="{% url 'accounts:signup_evaluator' %}">Evaluator</a>
+      <a href="{% url 'accounts:signup_courier' %}">Delivery partner</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

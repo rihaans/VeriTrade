@@ -1,193 +1,148 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.db import IntegrityError
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.contrib.auth import get_user_model
+"""Courier workspace.
+
+Addresses come from the buyer's and seller's stored profiles. The previous
+implementation read ``product_seller.address`` and ``product.product_buyer``,
+neither of which exists on any model, so this screen raised ``AttributeError``
+on every request. It also called a live geocoding API inline on page load,
+which blocked the response on a third-party service.
+"""
+
+import logging
+
 from django.contrib import messages
-from django.http import JsonResponse
-from events.models import userFull, product, cart, PRODUCT_CATEGORIES, userCredits, deliveryGuy, deliveryJob
-from django.contrib.auth import update_session_auth_hash
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
-from django.urls import reverse
-from geopy.geocoders import Nominatim
-# Create your views here.
+from django.core.paginator import Paginator
+from django.db.models import Count
+from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
+
+from events.decorators import courier_required
+from events.models import Delivery
+from events.services import logistics
+
+logger = logging.getLogger("veritrade.logistics")
+
+PAGE_SIZE = 12
 
 
-def get_location(address):
-    geolocator = Nominatim(user_agent="geoapi")
-    location = geolocator.geocode(address)
-    if location:
-        return location.latitude, location.longitude
-    return None, None
-
-def dlv_home(request,pk):
-    return render(request, 'delivery/home_new.html')
-def dlv_signup(request):
-    if request.method == "POST":
-        first_name = request.POST.get("first_name")
-        last_name = request.POST.get("last_name")
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        phone = request.POST.get("phone")
-        password = request.POST.get("password")
-
-        try:
-            if not User.objects.filter(email=email).exists():
-                user = User.objects.create_user(
-                        username=username,
-                        email=email,
-                        password=password,
-                        is_active=True,  # Account inactive until verified
-                        first_name=first_name,
-                        last_name=last_name,
-                )
-                user.save()
-
-                # Save additional Customer Care data
-                dlv_data = deliveryGuy.objects.create(
-                        deliveryGuy_phoneNumber=phone,
-                        deliveryGuy_user=user,
-                )
-                dlv_data.save()
-                # Redirect to login page with success message
-                return redirect('dlv_loginForm')
-            else:
-                # If email exists, return error message
-                message1 = 1
-                return render(request, "delivery/signup_new.html", {"message1": message1})
-
-        except IntegrityError:
-            # Handle database-related errors
-            message1 = 1
-            return render(request, "delivery/signup_new.html", {"message1": message1})
-
-    # Render the signup form if not a POST request
-    return render(request, "delivery/signup_new.html")
+def _open_delivery(profile):
+    """The courier's in-progress delivery, if any."""
+    return (
+        Delivery.objects.filter(courier=profile, status__in=Delivery.OPEN_STATUSES)
+        .select_related(
+            "order_item",
+            "order_item__product",
+            "order_item__seller",
+            "order_item__seller__user",
+            "order_item__order",
+            "order_item__order__buyer",
+            "order_item__order__buyer__user",
+        )
+        .first()
+    )
 
 
-def dlv_loginForm(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+@courier_required
+def dashboard(request):
+    completed = Delivery.objects.filter(
+        courier=request.profile, status=Delivery.Status.DELIVERED
+    ).aggregate(total=Count("pk"))
 
-        try:
-            user = User.objects.get(email=email)
-            dlv_user = deliveryGuy.objects.get(deliveryGuy_user_id=user)
-            print("eval user exist and the id:", dlv_user)
-        except User.DoesNotExist:
-            return render(
-                request, "delivery/login_new.html", {"incorrect": "Email not registered"}
-            )
-
-        authenticated_user = authenticate(username=user.username, password=password)
-
-        if authenticated_user:
-            if user.is_active and not user.is_staff and not user.is_superuser:
-                login(request, authenticated_user)
-                return redirect("dlv_home", pk=user.id)
-            else:
-                return render(
-                        request,
-                        "delivery/login_new.html",
-                        {"incorrect": "User not active or unauthorized"},
-                )
-        else:
-            return render(
-                request, "delivery/login_new.html", {"incorrect": "Incorrect credentials"}
-            )
-
-    return render(request, "delivery/login_new.html")
-
-def dlv_logout(request):
-    logout(request)
-    return redirect("dlv_loginForm")
+    return render(
+        request,
+        "logistics/dashboard.html",
+        {
+            "page_title": "Delivery dashboard",
+            "current_delivery": _open_delivery(request.profile),
+            "queue_size": logistics.available_deliveries().count(),
+            "completed_count": completed["total"] or 0,
+        },
+    )
 
 
+@courier_required
+def queue(request):
+    """Deliveries waiting for a courier."""
+    paginator = Paginator(logistics.available_deliveries(), PAGE_SIZE)
+    return render(
+        request,
+        "logistics/queue.html",
+        {
+            "page_title": "Available deliveries",
+            "page_obj": paginator.get_page(request.GET.get("page")),
+            "current_delivery": _open_delivery(request.profile),
+        },
+    )
 
-def dlv_more_jobs(request, pk):
-    has_job = deliveryGuy.objects.filter(currently_working=1, deliveryGuy_user_id=pk).exists()
-    products = product.objects.filter(product_sold=0, product_onDelivery = 0)
-    return render(request, "delivery/more_jobs.html", {"products": products, "has_job": has_job})
 
-def select_dlv_product(request, pk, prod):
-    dlv_guy = deliveryGuy.objects.filter(currently_working=0, deliveryGuy_user_id=pk).first()
-    if dlv_guy:
-        current_product = get_object_or_404(product, product_id=prod)
-        dlv_guy.current_product = current_product
-        dlv_guy.currently_working = 1
-        dlv_guy.save()
-        deliveryJob.objects.create(deliveryJob_product=current_product, deliveryJob_deliveryGuy=dlv_guy)
-    return redirect('current_dlv_job', pk=pk)
+@courier_required
+@require_POST
+def claim(request, pk):
+    try:
+        logistics.claim_delivery(request.profile, pk)
+    except logistics.DeliveryError as exc:
+        messages.error(request, str(exc))
+        return redirect("logistics:queue")
 
-def current_job(request, pk):
-    dlv_guy = deliveryGuy.objects.filter(currently_working=1, deliveryGuy_user_id=pk).first()
-    current_product = dlv_guy.current_product if dlv_guy else None
+    messages.success(request, "Delivery assigned to you.")
+    return redirect("logistics:current")
 
-    seller_lat, seller_long = get_location(current_product.product_seller.address) if current_product else (None, None)
-    buyer_lat, buyer_long = get_location(current_product.product_buyer.address) if current_product else (None, None)
 
-    context = {
-        "product": current_product,
-        "has_job": bool(current_product),
-        "seller_lat": seller_lat,
-        "seller_long": seller_long,
-        "buyer_lat": buyer_lat,
-        "buyer_long": buyer_long,
-    }
+@courier_required
+def current(request):
+    """The active job, with collection and drop-off addresses."""
+    delivery = _open_delivery(request.profile)
+    return render(
+        request,
+        "logistics/current.html",
+        {
+            "page_title": "Current delivery",
+            "delivery": delivery,
+            "Status": Delivery.Status,
+        },
+    )
 
-    return render(request, "delivery/job.html", context)
 
-@login_required
-def delivery_update_password(request):
-    if request.method == "POST":
-        old_password = request.POST["old_password"]
-        new_password = request.POST["new_password"]
-        confirm_password = request.POST["confirm_password"]
+@courier_required
+@require_POST
+def pick_up(request):
+    try:
+        logistics.mark_picked_up(request.profile)
+    except logistics.DeliveryError as exc:
+        messages.error(request, str(exc))
+    else:
+        messages.success(request, "Marked as picked up.")
+    return redirect("logistics:current")
 
-        user = request.user
 
-        if not user.check_password(old_password):
-            messages.error(request, "Old password is incorrect.")
-            return redirect('delivery_update_password')
+@courier_required
+@require_POST
+def deliver(request):
+    """Complete the delivery, which releases payment to the seller."""
+    try:
+        logistics.mark_delivered(request.profile)
+    except logistics.DeliveryError as exc:
+        messages.error(request, str(exc))
+        return redirect("logistics:current")
 
-        if new_password != confirm_password:
-            messages.error(request, "New passwords do not match.")
-            return redirect('delivery_update_password')
+    messages.success(request, "Delivery completed and the seller has been paid.")
+    return redirect("logistics:queue")
 
-        user.set_password(new_password)
-        user.save()
 
-        # ✅ This keeps the user logged in after password change
-        update_session_auth_hash(request, user)
+@courier_required
+def history(request):
+    deliveries = (
+        Delivery.objects.filter(courier=request.profile)
+        .exclude(status__in=Delivery.OPEN_STATUSES)
+        .select_related("order_item", "order_item__product", "order_item__order")
+        .order_by("-delivered_at", "-created_at")
+    )
+    paginator = Paginator(deliveries, PAGE_SIZE)
 
-        messages.success(request, "Password updated successfully.")
-
-        # Fetch delivery guy's primary key (pk)
-        delivery_guy = deliveryGuy.objects.get(deliveryGuy_user=user)
-        return redirect(reverse('delivery_more_jobs', kwargs={'pk': delivery_guy.pk}))
-
-    return redirect('delivery_more_jobs')
-
-@login_required
-def delivery_update_phone(request):
-    if request.method == "POST":
-        new_phone = request.POST["new_phone"]
-
-        # Check if the phone number already exists
-        if deliveryGuy.objects.filter(deliveryGuy_phoneNumber=new_phone).exists():
-            messages.error(request, "Phone number already exists.")
-            return redirect('delivery_update_phone')
-
-        delivery_guy = deliveryGuy.objects.get(deliveryGuy_user=request.user)
-        delivery_guy.deliveryGuy_phoneNumber = new_phone
-        delivery_guy.save()
-
-        messages.success(request, "Phone number updated successfully.")
-
-        # Ensure the redirect includes the required pk
-        return redirect(reverse('delivery_more_jobs', kwargs={'pk': delivery_guy.pk}))
-
-    return redirect('delivery_more_jobs')
-
+    return render(
+        request,
+        "logistics/history.html",
+        {
+            "page_title": "Delivery history",
+            "page_obj": paginator.get_page(request.GET.get("page")),
+        },
+    )

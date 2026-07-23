@@ -1,33 +1,31 @@
+"""Marketplace routes, mounted at /market/ under the ``marketplace`` namespace.
+
+State-changing routes are POST-only (enforced by ``require_POST`` on the view),
+so no purchase, cart change, or deletion can be triggered by a link, an image
+tag, or a prefetch.
+"""
+
 from django.urls import path
-from . import views
 
-from django.contrib.auth import views as auth_views
+from .views import marketplace
 
+app_name = "marketplace"
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('loginForm', views.loginForm, name='loginForm'),
-    path('signupForm', views.signupForm, name='signupForm'),
-    path('logout/', views.logout_view, name='logout'),
-    
-    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    path("", marketplace.home, name="home"),
+    path("product/<int:pk>/", marketplace.product_detail, name="product_detail"),
 
-    path('home/<int:pk>', views.home, name='home'),
-    path('sell/<int:pk>', views.sell, name='sell'),
-    path('product/<int:pk>/<int:pk2>/', views.product_detail, name='product_detail'),
-    path('add_to_cart/<int:pk>/<int:pk2>/', views.add_to_cart, name='add_to_cart'),
-    path('delete_cart_item/<int:pk>/<int:item_id>/', views.delete_cart_item, name='delete_cart_item'),
-    path('direct_buy/<int:pk>/<int:item_id>/', views.direct_buy, name='direct_buy'),
-    path('cart_to_buy/<int:pk>/', views.cart_to_buy, name='cart_to_buy'),
+    path("sell/", marketplace.sell, name="sell"),
+    path("listings/", marketplace.my_listings, name="my_listings"),
+    path("listings/<int:pk>/delete/", marketplace.delete_listing, name="delete_listing"),
 
-    path('profile/<int:pk>/', views.profile, name='profile'),
-    path('change_address/', views.change_address, name='change_address'),
-    path('change_password/', views.change_password, name='change_password'),
-    path('delete_account/', views.delete_account, name='delete_account'),
-    path('base/edit-profile/', views.edit_profile, name='edit_profile'),
+    path("cart/", marketplace.cart, name="cart"),
+    path("cart/add/<int:pk>/", marketplace.add_to_cart, name="add_to_cart"),
+    path("cart/remove/<int:pk>/", marketplace.remove_from_cart, name="remove_from_cart"),
+    path("cart/checkout/", marketplace.checkout, name="checkout"),
+    path("product/<int:pk>/buy/", marketplace.buy_now, name="buy_now"),
 
-    path('base/buy_credits/<int:pk>/', views.buy_credits, name='buy_credits'),
-
-
-
+    path("orders/", marketplace.orders, name="orders"),
+    path("orders/<str:reference>/", marketplace.order_detail, name="order_detail"),
+    path("orders/<str:reference>/cancel/", marketplace.cancel_order, name="cancel_order"),
 ]

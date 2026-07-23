@@ -1,19 +1,12 @@
-# Django and Core Dependencies
+# Runtime dependencies. Pin exact versions for reproducible deploys.
+
 Django==5.1
-python-dotenv==1.0.0
+python-dotenv==1.0.0      # Loads .env into the environment
+Pillow>=10.2.0            # Image decoding and upload validation
+whitenoise==6.6.0         # Serves hashed static files without a separate server
 
-# Database
-# SQLite is included with Python, no additional package needed
-
-# Geolocation
-geopy==2.4.1
-
-# Production Server (optional - gunicorn doesn't work on Windows)
-# gunicorn==21.2.0  # Unix/Linux only
-whitenoise==6.6.0
-
-# Development Tools (optional)
-python-decouple==3.8
-
-# Additional useful packages
-Pillow>=10.2.0  # For image handling (use >= for Python 3.13 compatibility)
+# Optional, for a production WSGI server on Unix/Linux (not Windows):
+# gunicorn==21.2.0
+#
+# Optional, to run against PostgreSQL instead of SQLite:
+# psycopg[binary]==3.2.1

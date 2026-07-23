@@ -1,0 +1,20 @@
+{# Pagination. Expects `page_obj`.
+   {% querystring %} is a Django 5.1 builtin: it rewrites the current query
+   string with the given override, so active filters survive paging. #}
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pagination" aria-label="Pagination">
+    {% if page_obj.has_previous %}
+      <a class="pagination__link" rel="prev"
+         href="{% querystring page=page_obj.previous_page_number %}">&larr; Previous</a>
+    {% endif %}
+
+    <span class="pagination__state">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a class="pagination__link" rel="next"
+         href="{% querystring page=page_obj.next_page_number %}">Next &rarr;</a>
+    {% endif %}
+  </nav>
+{% endif %}

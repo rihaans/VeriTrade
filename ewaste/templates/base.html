@@ -1,0 +1,46 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ page_title|default:"Verified second-hand electronics" }} · VeriTrade{% endblock %}</title>
+  <meta name="description" content="{% block description %}VeriTrade is a marketplace for pre-owned electronics where every listing is physically inspected and graded before it goes on sale.{% endblock %}">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap">
+  <link rel="stylesheet" href="{% static 'css/veritrade.css' %}">
+
+  <script>
+    /* Apply the stored theme before first paint so there is no flash of the
+       wrong palette. Kept inline and tiny for that reason. */
+    (function () {
+      document.documentElement.classList.remove("no-js");
+      try {
+        var stored = localStorage.getItem("veritrade-theme");
+        if (stored) document.documentElement.setAttribute("data-theme", stored);
+      } catch (e) {}
+    })();
+  </script>
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  {% include "partials/header.html" %}
+
+  <main id="main" class="page">
+    <div class="shell">
+      {% include "partials/messages.html" %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  {% include "partials/footer.html" %}
+
+  <script src="{% static 'js/veritrade.js' %}" defer></script>
+  {% block body_extra %}{% endblock %}
+</body>
+</html>

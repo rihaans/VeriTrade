@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">{{ profile.get_role_display }}</p>
+    <h1>{{ profile.display_name }}</h1>
+  </div>
+  {% if profile.role == "MEMBER" %}
+    <a class="btn btn--ghost" href="{% url 'accounts:wallet' %}">Credits &amp; ledger</a>
+  {% endif %}
+</div>
+
+<div class="split">
+  <div class="stack-lg">
+    <section class="panel">
+      <p class="eyebrow">Your details</p>
+      <form method="post" action="{% url 'accounts:update_details' %}"
+            enctype="multipart/form-data" class="mt-4" novalidate>
+        {% csrf_token %}
+        {% include "partials/form_errors.html" with form=details_form %}
+
+        <div class="field-row field-row--2">
+          {% include "partials/field.html" with field=details_form.first_name %}
+          {% include "partials/field.html" with field=details_form.last_name %}
+        </div>
+        {% include "partials/field.html" with field=details_form.phone_number %}
+        {% include "partials/field.html" with field=details_form.avatar %}
+
+        <button class="btn btn--primary mt-6" type="submit">Save details</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Address</p>
+      <p class="small muted mt-2">
+        {% if profile.role == "MEMBER" %}
+          Couriers collect from and deliver to this address, so it must be
+          complete before you can sell or receive an order.
+        {% else %}
+          Where you are based.
+        {% endif %}
+      </p>
+
+      <form method="post" action="{% url 'accounts:update_address' %}" class="mt-4" novalidate>
+        {% csrf_token %}
+        {% include "partials/form_errors.html" with form=address_form %}
+
+        {% include "partials/field.html" with field=address_form.street %}
+        <div class="field-row field-row--2">
+          {% include "partials/field.html" with field=address_form.city %}
+          {% include "partials/field.html" with field=address_form.state %}
+        </div>
+        <div class="field-row field-row--2">
+          {% include "partials/field.html" with field=address_form.postal_code %}
+          {% include "partials/field.html" with field=address_form.country %}
+        </div>
+
+        <button class="btn btn--primary mt-6" type="submit">Save address</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <p class="eyebrow">Password</p>
+      <form method="post" action="{% url 'accounts:change_password' %}" class="mt-4" novalidate>
+        {% csrf_token %}
+        {% include "partials/form_errors.html" with form=password_form %}
+
+        {% include "partials/field.html" with field=password_form.old_password %}
+        {% include "partials/field.html" with field=password_form.new_password1 %}
+        {% include "partials/field.html" with field=password_form.new_password2 %}
+
+        <button class="btn btn--primary mt-6" type="submit">Change password</button>
+      </form>
+    </section>
+  </div>
+
+  <aside class="stack-lg">
+    <div class="panel certificate">
+      <p class="eyebrow">Account</p>
+      <dl class="spec mt-4">
+        <dt>Username</dt><dd class="num">{{ user.username }}</dd>
+        <dt>Email</dt><dd class="truncate">{{ user.email }}</dd>
+        <dt>Role</dt><dd>{{ profile.get_role_display }}</dd>
+        <dt>Joined</dt><dd class="num">{{ user.date_joined|date:"Y-m-d" }}</dd>
+        <dt>Address</dt>
+        <dd>
+          {% if profile.has_address %}
+            <span class="pill pill--verified">Complete</span>
+          {% else %}
+            <span class="pill pill--pending">Incomplete</span>
+          {% endif %}
+        </dd>
+      </dl>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">Danger zone</p>
+      <p class="small muted mt-4">
+        Deleting your account removes your listings, cart, and profile
+        permanently. Completed orders are retained for the other party's records.
+      </p>
+
+      <form method="post" action="{% url 'accounts:delete_account' %}" class="mt-4"
+            data-confirm="Delete your account permanently? This cannot be undone." novalidate>
+        {% csrf_token %}
+        <div class="field">
+          <label class="field__label" for="delete-password">Confirm your password</label>
+          <input class="field__input" type="password" name="password" id="delete-password"
+                 autocomplete="current-password" required>
+        </div>
+        <button class="btn btn--danger btn--block mt-4" type="submit">Delete my account</button>
+      </form>
+    </div>
+  </aside>
+</div>
+{% endblock %}

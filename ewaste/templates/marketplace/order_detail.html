@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Order</p>
+    <h1 class="num">{{ order.reference }}</h1>
+  </div>
+  <a class="btn btn--ghost" href="{% url 'marketplace:orders' %}">All orders</a>
+</div>
+
+<div class="split">
+  <div class="stack-lg">
+    {% for item in order.items.all %}
+      <article class="panel certificate">
+        <div class="cluster cluster-between">
+          <div>
+            <p class="eyebrow">{{ item.product.get_category_display }}</p>
+            <h3 class="mt-2">
+              <a href="{% url 'marketplace:product_detail' item.product.pk %}">{{ item.product.name }}</a>
+            </h3>
+            <p class="small muted mt-2">Sold by {{ item.seller.display_name }}</p>
+          </div>
+          <p class="price__now num">{{ currency_symbol }}{{ item.unit_price }}</p>
+        </div>
+
+        <hr>
+
+        {% with delivery=item.delivery %}
+          <p class="eyebrow eyebrow--plain mb-4">Delivery</p>
+
+          {% if delivery.status == "CANCELLED" %}
+            <span class="pill pill--danger">Cancelled and refunded</span>
+          {% else %}
+            <div class="rail">
+              <div class="rail__step" data-done="true">Ordered</div>
+              <div class="rail__step" data-done="{% if delivery.status == 'ASSIGNED' or delivery.status == 'PICKED_UP' or delivery.status == 'DELIVERED' %}true{% else %}false{% endif %}">Courier assigned</div>
+              <div class="rail__step" data-done="{% if delivery.status == 'PICKED_UP' or delivery.status == 'DELIVERED' %}true{% else %}false{% endif %}">Picked up</div>
+              <div class="rail__step" data-done="{% if delivery.status == 'DELIVERED' %}true{% else %}false{% endif %}">Delivered</div>
+            </div>
+
+            <dl class="spec mt-4">
+              <dt>Status</dt><dd>{{ delivery.get_status_display }}</dd>
+              {% if delivery.courier %}
+                <dt>Courier</dt><dd>{{ delivery.courier.display_name }}</dd>
+              {% endif %}
+              {% if delivery.delivered_at %}
+                <dt>Delivered</dt><dd class="num">{{ delivery.delivered_at|date:"Y-m-d H:i" }}</dd>
+              {% endif %}
+            </dl>
+          {% endif %}
+        {% endwith %}
+      </article>
+    {% endfor %}
+  </div>
+
+  <aside class="stack-lg">
+    <div class="panel">
+      <p class="eyebrow">Summary</p>
+      <dl class="spec mt-4">
+        <dt>Reference</dt><dd class="num">{{ order.reference }}</dd>
+        <dt>Placed</dt><dd class="num">{{ order.created_at|date:"Y-m-d H:i" }}</dd>
+        <dt>Items</dt><dd class="num">{{ order.items.count }}</dd>
+        <dt>Total</dt><dd class="num bold">{{ currency_symbol }}{{ order.total_amount }}</dd>
+        <dt>Status</dt>
+        <dd>
+          {% if order.status == "COMPLETED" %}
+            <span class="pill pill--verified">Completed</span>
+          {% elif order.status == "CANCELLED" %}
+            <span class="pill pill--danger">Cancelled</span>
+          {% else %}
+            <span class="pill pill--active">In progress</span>
+          {% endif %}
+        </dd>
+      </dl>
+    </div>
+
+    {% if order.status == "PENDING" %}
+      <div class="panel">
+        <p class="eyebrow">Change of mind?</p>
+        <p class="small muted mt-4">
+          Anything not yet delivered is refunded in full and goes back on sale.
+        </p>
+        <form method="post" action="{% url 'marketplace:cancel_order' order.reference %}"
+              data-confirm="Cancel order {{ order.reference }} and refund the undelivered items?"
+              class="mt-4">
+          {% csrf_token %}
+          <button class="btn btn--danger btn--block" type="submit">Cancel this order</button>
+        </form>
+      </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

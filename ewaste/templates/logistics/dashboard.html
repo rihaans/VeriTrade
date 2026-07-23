@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Delivery partner</p>
+    <h1>{{ current_profile.display_name }}</h1>
+  </div>
+  <a class="btn btn--primary" href="{% url 'logistics:queue' %}">Available jobs</a>
+</div>
+
+<div class="stats mb-6">
+  <div class="stat">
+    <p class="stat__label">Unassigned</p>
+    <p class="stat__value">{{ queue_size }}</p>
+    <p class="stat__note">jobs available</p>
+  </div>
+  <div class="stat">
+    <p class="stat__label">Completed</p>
+    <p class="stat__value">{{ completed_count }}</p>
+    <p class="stat__note">by you</p>
+  </div>
+</div>
+
+<div class="split">
+  <section class="panel certificate">
+    <p class="eyebrow">Current job</p>
+
+    {% if current_delivery %}
+      <div class="cluster cluster-between mt-4">
+        <div>
+          <h2>{{ current_delivery.order_item.product.name }}</h2>
+          <p class="small muted mt-2 num">
+            ORDER {{ current_delivery.order_item.order.reference }}
+          </p>
+        </div>
+        <span class="pill pill--active">{{ current_delivery.get_status_display }}</span>
+      </div>
+
+      <div class="btn-row mt-6">
+        <a class="btn btn--primary" href="{% url 'logistics:current' %}">Open the job</a>
+      </div>
+    {% else %}
+      <div class="empty mt-4">
+        <p class="empty__mark">Idle</p>
+        <h3>You have no active delivery</h3>
+        <p class="small">Claim one from the queue to get moving.</p>
+        <a class="btn btn--primary mt-4" href="{% url 'logistics:queue' %}">Available jobs</a>
+      </div>
+    {% endif %}
+  </section>
+
+  <aside class="panel">
+    <p class="eyebrow">How a job runs</p>
+    <ol class="flow mt-4 small muted" style="padding-left:1.1rem">
+      <li>Claim an unassigned delivery.</li>
+      <li>Collect the item from the seller's address.</li>
+      <li>Mark it picked up.</li>
+      <li>Deliver to the buyer and confirm.</li>
+    </ol>
+    <hr>
+    <p class="tiny faint">
+      Confirming delivery is what releases the seller's payment, so only confirm
+      once the item is genuinely handed over.
+    </p>
+  </aside>
+</div>
+{% endblock %}

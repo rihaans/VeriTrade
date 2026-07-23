@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Evaluator</p>
+    <h1>Evaluation queue</h1>
+  </div>
+  {% if current_job %}
+    <a class="btn btn--primary" href="{% url 'evaluation:current' %}">Back to current job</a>
+  {% endif %}
+</div>
+
+{% if current_job %}
+  <div class="alert alert--info mb-6">
+    <span class="alert__text">
+      You are already holding <strong>{{ current_job.product.name }}</strong>.
+      Finish or release it before claiming another.
+    </span>
+  </div>
+{% endif %}
+
+<form method="get" class="filter-bar">
+  {% include "partials/field.html" with field=filter_form.category %}
+  <button class="btn btn--ghost" type="submit">Filter</button>
+</form>
+
+{% if page_obj.object_list %}
+  <div class="stack">
+    {% for product in page_obj %}
+      <article class="job">
+        <div class="job__thumb">
+          {% with image=product.primary_image %}
+            {% if image %}<img src="{{ image.image.url }}" alt="" loading="lazy">{% endif %}
+          {% endwith %}
+        </div>
+
+        <div>
+          <p class="card__meta">{{ product.get_category_display }}</p>
+          <p class="job__title">{{ product.name }}</p>
+          <p class="small muted mt-2 truncate">{{ product.description|truncatechars:120 }}</p>
+          <p class="tiny faint num mt-2">
+            SUBMITTED {{ product.created_at|date:"Y-m-d" }} ·
+            SELLER {{ product.seller.display_name|upper }} ·
+            ASKING {{ currency_symbol }}{{ product.listed_price }}
+          </p>
+        </div>
+
+        <div class="right">
+          {% if current_job %}
+            <button class="btn btn--sm" type="button" disabled>Claim</button>
+          {% else %}
+            <form method="post" action="{% url 'evaluation:claim' product.pk %}" data-guard-submit>
+              {% csrf_token %}
+              <button class="btn btn--primary btn--sm" type="submit"
+                      data-busy-label="Claiming…">Claim</button>
+            </form>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+  {% include "partials/pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty">
+    <p class="empty__mark">Queue clear</p>
+    <h3>Nothing is waiting</h3>
+    <p class="small">Every submitted device has been assessed. Check back shortly.</p>
+  </div>
+{% endif %}
+{% endblock %}

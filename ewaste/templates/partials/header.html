@@ -1,0 +1,74 @@
+{% load static %}
+<header class="masthead">
+  <div class="shell masthead__inner">
+    <a class="brand" href="{% url 'marketing:index' %}">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name"><strong>Veri</strong><span>Trade</span></span>
+    </a>
+
+    <button class="icon-button nav-toggle" type="button"
+            data-nav-toggle aria-expanded="false" aria-controls="primary-nav"
+            style="margin-inline-start:auto">
+      <span class="visually-hidden">Menu</span>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M2 5h14M2 9h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <nav class="nav" id="primary-nav" aria-label="Primary">
+      {% if current_profile and current_profile.role == Role.EVALUATOR %}
+        <a class="nav__link" href="{% url 'evaluation:dashboard' %}">Dashboard</a>
+        <a class="nav__link" href="{% url 'evaluation:queue' %}">Queue</a>
+        <a class="nav__link" href="{% url 'evaluation:current' %}">Current job</a>
+        <a class="nav__link" href="{% url 'evaluation:history' %}">History</a>
+
+      {% elif current_profile and current_profile.role == Role.COURIER %}
+        <a class="nav__link" href="{% url 'logistics:dashboard' %}">Dashboard</a>
+        <a class="nav__link" href="{% url 'logistics:queue' %}">Available</a>
+        <a class="nav__link" href="{% url 'logistics:current' %}">Current job</a>
+        <a class="nav__link" href="{% url 'logistics:history' %}">History</a>
+
+      {% elif user.is_authenticated %}
+        <a class="nav__link" href="{% url 'marketplace:home' %}">Browse</a>
+        <a class="nav__link" href="{% url 'marketplace:sell' %}">Sell</a>
+        <a class="nav__link" href="{% url 'marketplace:my_listings' %}">Listings</a>
+        <a class="nav__link" href="{% url 'marketplace:orders' %}">Orders</a>
+
+      {% else %}
+        <a class="nav__link" href="{% url 'marketing:how_it_works' %}">How it works</a>
+      {% endif %}
+
+      <div class="nav__meta">
+        {% if user.is_authenticated %}
+          {% if current_profile.role == Role.MEMBER %}
+            <a class="balance-chip" href="{% url 'accounts:wallet' %}">
+              <span class="balance-chip__label">Credits</span>
+              <span class="num">{{ credit_balance }}</span>
+            </a>
+            <a class="nav__link cart-link" href="{% url 'marketplace:cart' %}">
+              Cart
+              {% if cart_count %}<span class="cart-link__count num">{{ cart_count }}</span>{% endif %}
+            </a>
+          {% endif %}
+
+          <a class="nav__link" href="{% url 'accounts:profile' %}">{{ current_profile.display_name|default:user.username }}</a>
+
+          <form method="post" action="{% url 'accounts:logout' %}" style="display:inline">
+            {% csrf_token %}
+            <button class="btn btn--quiet btn--sm" type="submit">Sign out</button>
+          </form>
+        {% else %}
+          <a class="nav__link" href="{% url 'accounts:login' %}">Sign in</a>
+          <a class="btn btn--primary btn--sm" href="{% url 'accounts:signup' %}">Create account</a>
+        {% endif %}
+
+        <button class="icon-button" type="button" data-theme-toggle aria-label="Switch theme">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5Z"
+                  stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>

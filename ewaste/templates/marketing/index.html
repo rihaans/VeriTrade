@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero__grid">
+    <div>
+      <p class="eyebrow reveal">Second-hand electronics, graded</p>
+      <h1 class="hero__title reveal">
+        Nobody buys<br>used electronics<br><em>on trust.</em>
+      </h1>
+      <p class="hero__lede reveal">
+        So we removed the need for it. Every device listed on VeriTrade is
+        collected, opened, and scored out of 100 by a human evaluator before a
+        buyer ever sees it. The score is on the listing. So are the notes.
+      </p>
+      <div class="btn-row hero__actions reveal">
+        <a class="btn btn--primary btn--lg" href="{% url 'accounts:signup' %}">Create an account</a>
+        <a class="btn btn--ghost btn--lg" href="{% url 'marketing:how_it_works' %}">See how grading works</a>
+      </div>
+    </div>
+
+    <div class="specimen reveal">
+      <p class="eyebrow eyebrow--plain">Specimen record</p>
+      <div class="specimen__row mt-4">
+        <div>
+          <h3>Inspection result</h3>
+          <p class="small muted">Recorded by evaluator on collection</p>
+        </div>
+        <div>
+          <div class="score score--lg" style="--score: 87" data-band="good"
+               role="img" aria-label="Condition score 87 out of 100">
+            <span class="score__value">87</span>
+          </div>
+          <p class="score-legend">Graded</p>
+        </div>
+      </div>
+
+      <div class="specimen__rule"></div>
+
+      <dl class="spec">
+        <dt>Chassis</dt><dd>Light scuffing on the base, no dents</dd>
+        <dt>Display</dt><dd>No dead pixels, uniform backlight</dd>
+        <dt>Battery</dt><dd>91% of design capacity</dd>
+        <dt>Verdict</dt><dd class="verified bold">Approved for listing</dd>
+      </dl>
+
+      <div class="specimen__rule"></div>
+      <p class="tiny faint num">EXAMPLE ONLY · NOT A LIVE LISTING</p>
+    </div>
+  </div>
+</section>
+
+{% if stats.listings %}
+<section class="mb-6">
+  <div class="stats">
+    <div class="stat">
+      <p class="stat__label">Live listings</p>
+      <p class="stat__value">{{ stats.listings|intcomma }}</p>
+    </div>
+    <div class="stat">
+      <p class="stat__label">Categories</p>
+      <p class="stat__value">{{ stats.categories }}</p>
+    </div>
+    <div class="stat">
+      <p class="stat__label">Mean score</p>
+      <p class="stat__value">{% if stats.average_score %}{{ stats.average_score|floatformat:0 }}{% else %}&mdash;{% endif %}</p>
+      <p class="stat__note">out of 100</p>
+    </div>
+    <div class="stat">
+      <p class="stat__label">Delivered</p>
+      <p class="stat__value">{{ stats.delivered|intcomma }}</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="mb-6">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">The process</p>
+      <h2>Four steps, one of them ours</h2>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <h3>You list it</h3>
+      <p>Describe the device, add photos, set your price. It does not go on sale yet.</p>
+    </div>
+    <div class="step">
+      <h3>We inspect it</h3>
+      <p>An evaluator assesses the device and scores it out of 100. Below 40 it is rejected outright.</p>
+    </div>
+    <div class="step">
+      <h3>A buyer purchases</h3>
+      <p>Payment is held, not forwarded. The listing shows the score and the evaluator's notes.</p>
+    </div>
+    <div class="step">
+      <h3>A courier delivers</h3>
+      <p>Only once delivery is confirmed does the seller get paid. That is the whole guarantee.</p>
+    </div>
+  </div>
+</section>
+
+{% if categories %}
+<section class="mb-6">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">Browse</p>
+      <h2>What is on the shelf</h2>
+    </div>
+  </div>
+
+  <div class="category-grid">
+    {% for category in categories %}
+      <a class="category-tile" href="{% url 'accounts:login' %}?next={% url 'marketplace:home' %}%3Fcategory%3D{{ category.code }}">
+        <span>{{ category.label }}</span>
+        <span class="category-tile__count num">{{ category.count }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if featured %}
+<section>
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">Highest graded</p>
+      <h2>Recently verified</h2>
+    </div>
+    <a class="btn btn--quiet" href="{% url 'accounts:signup' %}">Sign up to buy &rarr;</a>
+  </div>
+
+  <div class="grid grid-cards">
+    {% for product in featured %}
+      {% include "partials/product_card.html" with product=product %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

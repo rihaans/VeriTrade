@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(git pull)",
+      "PowerShell(git reset --hard origin/main)",
+      "PowerShell(python --version)",
+      "PowerShell(python -c \"import django; print\\(django.get_version\\(\\)\\)\")",
+      "PowerShell($py = \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv\\\\Scripts\\\\python.exe\"; if \\(Test-Path $py\\) { & $py --version; & $py -c \"import django; print\\('django', django.get_version\\(\\)\\)\" } else { Get-ChildItem \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv\" })",
+      "PowerShell(python -m venv \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv-win\")",
+      "PowerShell(& \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv-win\\\\Scripts\\\\python.exe\" -m pip install --quiet --upgrade pip)",
+      "PowerShell(& \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv-win\\\\Scripts\\\\python.exe\" -m pip install --quiet -r \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\requirements.txt\")",
+      "PowerShell(& \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv-win\\\\Scripts\\\\python.exe\" -c \"import django;print\\('django',django.get_version\\(\\)\\)\")",
+      "PowerShell($py=\"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv-win\\\\Scripts\\\\python.exe\"; & $py -m pip list --format=freeze; Write-Output \"--- CHECK ---\"; Set-Location \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\"; & $py manage.py check)",
+      "PowerShell(& \"c:\\\\Users\\\\rihaa\\\\Development\\\\Projects\\\\VeriTrade\\\\ewaste\\\\.venv-win\\\\Scripts\\\\python.exe\" \"C:\\\\Users\\\\rihaa\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-rihaa-Development-Projects-VeriTrade\\\\e62cdbf2-f447-40d6-b79d-62f96e6f8d0d\\\\scratchpad\\\\inspect_db.py\")",
+      "Bash(awk '{print $1}')"
+    ]
+  }
+}

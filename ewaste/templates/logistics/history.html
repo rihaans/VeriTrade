@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Delivery partner</p>
+    <h1>Your deliveries</h1>
+  </div>
+  <a class="btn btn--ghost" href="{% url 'logistics:queue' %}">Available jobs</a>
+</div>
+
+{% if page_obj.object_list %}
+  <div class="panel panel--flush">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Item</th>
+            <th scope="col">Order</th>
+            <th scope="col">Delivered</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="num">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for delivery in page_obj %}
+            <tr>
+              <td>{{ delivery.order_item.product.name }}</td>
+              <td class="num tiny">{{ delivery.order_item.order.reference }}</td>
+              <td class="num tiny">
+                {% if delivery.delivered_at %}{{ delivery.delivered_at|date:"Y-m-d H:i" }}{% else %}&mdash;{% endif %}
+              </td>
+              <td>
+                {% if delivery.status == "DELIVERED" %}
+                  <span class="pill pill--verified">Delivered</span>
+                {% else %}
+                  <span class="pill pill--danger">{{ delivery.get_status_display }}</span>
+                {% endif %}
+              </td>
+              <td class="num">{{ currency_symbol }}{{ delivery.order_item.unit_price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% include "partials/pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty">
+    <p class="empty__mark">No history</p>
+    <h3>You have not completed a delivery yet</h3>
+    <a class="btn btn--primary mt-4" href="{% url 'logistics:queue' %}">Available jobs</a>
+  </div>
+{% endif %}
+{% endblock %}

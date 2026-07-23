@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Credits</p>
+    <h1>Your balance</h1>
+  </div>
+  <a class="btn btn--ghost" href="{% url 'accounts:profile' %}">Back to profile</a>
+</div>
+
+<div class="split">
+  <div class="stack-lg">
+    <section class="panel panel--flush">
+      <div class="panel__head">
+        <p class="eyebrow eyebrow--plain">Ledger</p>
+        <span class="tiny faint num">LAST 50 ENTRIES</span>
+      </div>
+
+      {% if history %}
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Type</th>
+                <th scope="col">Detail</th>
+                <th scope="col" class="num">Amount</th>
+                <th scope="col" class="num">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for entry in history %}
+                <tr>
+                  <td class="num tiny">{{ entry.created_at|date:"Y-m-d H:i" }}</td>
+                  <td>
+                    {% if entry.amount > 0 %}
+                      <span class="pill pill--verified">{{ entry.get_kind_display }}</span>
+                    {% else %}
+                      <span class="pill pill--muted">{{ entry.get_kind_display }}</span>
+                    {% endif %}
+                  </td>
+                  <td class="small muted">{{ entry.memo|default:"&mdash;" }}</td>
+                  <td class="num {% if entry.amount > 0 %}verified{% endif %}">
+                    {% if entry.amount > 0 %}+{% endif %}{{ entry.amount }}
+                  </td>
+                  <td class="num">{{ entry.balance_after }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="panel__body">
+          <div class="empty">
+            <p class="empty__mark">No entries</p>
+            <h3>Nothing has moved yet</h3>
+            <p class="small">Add some credits and every transaction will be recorded here.</p>
+          </div>
+        </div>
+      {% endif %}
+    </section>
+  </div>
+
+  <aside class="stack-lg">
+    <div class="panel certificate center">
+      <p class="eyebrow eyebrow--plain" style="justify-content:center">Available</p>
+      <p class="num" style="font-size:var(--size-3xl);line-height:1;margin-top:var(--sp-3)">{{ balance }}</p>
+      <p class="tiny faint">CREDITS</p>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">Add credits</p>
+      <p class="small muted mt-2">
+        This is a demonstration top-up. No payment provider is connected and no
+        real money is taken.
+      </p>
+
+      <form method="post" class="mt-4" novalidate>
+        {% csrf_token %}
+        {% include "partials/form_errors.html" with form=form %}
+        {% include "partials/field.html" with field=form.amount %}
+        <button class="btn btn--primary btn--block mt-4" type="submit">Add credits</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">How payment works</p>
+      <p class="small muted mt-4">
+        Buying debits your balance straight away, but the seller is not paid
+        until a courier confirms delivery. Cancel before then and you are
+        refunded in full.
+      </p>
+    </div>
+  </aside>
+</div>
+{% endblock %}

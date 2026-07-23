@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Not permitted · VeriTrade{% endblock %}
+
+{% block content %}
+<div class="empty" style="border:0;padding-block:var(--sp-9)">
+  <p class="empty__mark">Error 403</p>
+  <h1>You cannot access that</h1>
+  <p class="lede mt-4" style="margin-inline:auto">
+    That page belongs to a different account or a different role.
+  </p>
+  <div class="btn-row mt-6" style="justify-content:center">
+    <a class="btn btn--primary" href="{% url 'marketing:index' %}">Back to the start</a>
+  </div>
+</div>
+{% endblock %}

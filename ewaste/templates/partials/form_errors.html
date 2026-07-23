@@ -1,0 +1,8 @@
+{# Non-field errors for a form. Include with: {% include "partials/form_errors.html" with form=form %} #}
+{% if form.non_field_errors %}
+  <div class="form-errors" role="alert">
+    <ul>
+      {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+  </div>
+{% endif %}

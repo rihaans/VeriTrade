@@ -1,0 +1,44 @@
+{% now "Y" as current_year %}
+<footer class="footer">
+  <div class="shell">
+    <div class="footer__grid">
+      <div>
+        <a class="brand" href="{% url 'marketing:index' %}">
+          <span class="brand__mark" aria-hidden="true"></span>
+          <span class="brand__name"><strong>Veri</strong><span>Trade</span></span>
+        </a>
+        <p class="small muted mt-4" style="max-width:38ch">
+          Every device sold here is collected, inspected, and graded by a person
+          before a buyer ever sees it.
+        </p>
+      </div>
+
+      <div>
+        <p class="footer__heading">Marketplace</p>
+        <ul class="footer__list">
+          <li><a href="{% url 'marketing:how_it_works' %}">How it works</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'marketplace:home' %}">Browse listings</a></li>
+            <li><a href="{% url 'marketplace:sell' %}">Sell an item</a></li>
+          {% else %}
+            <li><a href="{% url 'accounts:signup' %}">Create an account</a></li>
+            <li><a href="{% url 'accounts:login' %}">Sign in</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <div>
+        <p class="footer__heading">Work with us</p>
+        <ul class="footer__list">
+          <li><a href="{% url 'accounts:signup_evaluator' %}">Become an evaluator</a></li>
+          <li><a href="{% url 'accounts:signup_courier' %}">Become a delivery partner</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <span>&copy; {{ current_year }} VeriTrade</span>
+      <span>Credits are a demonstration currency, not real money.</span>
+    </div>
+  </div>
+</footer>

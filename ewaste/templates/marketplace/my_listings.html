@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Selling</p>
+    <h1>Your listings</h1>
+  </div>
+  <a class="btn btn--primary" href="{% url 'marketplace:sell' %}">List an item</a>
+</div>
+
+<div class="stats mb-6">
+  <div class="stat">
+    <p class="stat__label">Listings</p>
+    <p class="stat__value">{{ page_obj.paginator.count }}</p>
+  </div>
+  <div class="stat">
+    <p class="stat__label">Paid out</p>
+    <p class="stat__value">{{ currency_symbol }}{{ earned }}</p>
+    <p class="stat__note">delivered orders</p>
+  </div>
+  <div class="stat">
+    <p class="stat__label">In escrow</p>
+    <p class="stat__value">{{ currency_symbol }}{{ pending }}</p>
+    <p class="stat__note">awaiting delivery</p>
+  </div>
+</div>
+
+<section class="mb-6">
+  <div class="section-head">
+    <h2>Everything you have listed</h2>
+  </div>
+
+  {% if page_obj.object_list %}
+    <div class="stack">
+      {% for product in page_obj %}
+        <article class="job">
+          <div class="job__thumb">
+            {% with image=product.primary_image %}
+              {% if image %}
+                <img src="{{ image.image.url }}" alt="" loading="lazy">
+              {% endif %}
+            {% endwith %}
+          </div>
+
+          <div>
+            <p class="card__meta">{{ product.get_category_display }}</p>
+            <p class="job__title">
+              <a href="{% url 'marketplace:product_detail' product.pk %}">{{ product.name }}</a>
+            </p>
+            <div class="cluster mt-2">
+              {% include "partials/status_pill.html" with product=product %}
+              {% if product.evaluation_score is not None %}
+                <span class="tiny faint num">SCORE {{ product.evaluation_score }}/100</span>
+              {% endif %}
+              <span class="tiny faint num">LISTED {{ product.created_at|date:"Y-m-d" }}</span>
+            </div>
+          </div>
+
+          <div class="right">
+            <p class="price__now num">{{ currency_symbol }}{{ product.price }}</p>
+            {% if product.status != "SOLD" %}
+              <form method="post" action="{% url 'marketplace:delete_listing' product.pk %}"
+                    data-confirm="Withdraw '{{ product.name }}'?" class="mt-2">
+                {% csrf_token %}
+                <button class="btn btn--danger btn--sm" type="submit">Withdraw</button>
+              </form>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    {% include "partials/pagination.html" with page_obj=page_obj %}
+  {% else %}
+    <div class="empty">
+      <p class="empty__mark">Nothing listed</p>
+      <h3>You have not listed anything yet</h3>
+      <p class="small">Devices you no longer use are worth more than you think.</p>
+      <a class="btn btn--primary mt-4" href="{% url 'marketplace:sell' %}">List your first item</a>
+    </div>
+  {% endif %}
+</section>
+
+{% if sales %}
+<section>
+  <div class="section-head">
+    <h2>Sales</h2>
+  </div>
+
+  <div class="panel panel--flush">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Item</th>
+            <th scope="col">Order</th>
+            <th scope="col">Buyer</th>
+            <th scope="col">Delivery</th>
+            <th scope="col" class="num">You receive</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sale in sales %}
+            <tr>
+              <td>{{ sale.product.name }}</td>
+              <td class="num tiny">{{ sale.order.reference }}</td>
+              <td class="small muted">{{ sale.order.buyer.display_name }}</td>
+              <td>
+                {% with status=sale.delivery.status %}
+                  {% if status == "DELIVERED" %}
+                    <span class="pill pill--verified">Paid out</span>
+                  {% elif status == "CANCELLED" %}
+                    <span class="pill pill--danger">Cancelled</span>
+                  {% else %}
+                    <span class="pill pill--pending">{{ sale.delivery.get_status_display }}</span>
+                  {% endif %}
+                {% endwith %}
+              </td>
+              <td class="num">{{ currency_symbol }}{{ sale.unit_price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Catalogue</p>
+    <h1>Graded and ready</h1>
+  </div>
+  <div class="btn-row">
+    <a class="btn btn--ghost" href="{% url 'marketplace:sell' %}">Sell an item</a>
+    <a class="btn btn--primary" href="{% url 'accounts:wallet' %}">
+      Credits <span class="num">{{ balance }}</span>
+    </a>
+  </div>
+</div>
+
+<form method="get" class="filter-bar">
+  {% include "partials/field.html" with field=filter_form.q %}
+  {% include "partials/field.html" with field=filter_form.category %}
+  {% include "partials/field.html" with field=filter_form.sort %}
+  <button class="btn btn--ghost" type="submit">Apply</button>
+</form>
+
+{% if page_obj.object_list %}
+  <p class="eyebrow mb-4">
+    {{ page_obj.paginator.count }} listing{{ page_obj.paginator.count|pluralize }}
+  </p>
+  <div class="grid grid-cards">
+    {% for product in page_obj %}
+      {% include "partials/product_card.html" with product=product %}
+    {% endfor %}
+  </div>
+  {% include "partials/pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty">
+    <p class="empty__mark">Empty result</p>
+    <h3>Nothing matches yet</h3>
+    <p class="small">
+      Either no listings have passed evaluation, or your filters are too narrow.
+    </p>
+    <a class="btn btn--ghost mt-4" href="{% url 'marketplace:home' %}">Clear filters</a>
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Checkout</p>
+    <h1>Your cart</h1>
+  </div>
+  <a class="btn btn--ghost" href="{% url 'marketplace:home' %}">Keep browsing</a>
+</div>
+
+{% if available or unavailable %}
+  <div class="split">
+    <div class="stack-lg">
+      {% if available %}
+        <section class="stack">
+          {% for item in available %}
+            <article class="job">
+              <div class="job__thumb">
+                {% with image=item.product.primary_image %}
+                  {% if image %}<img src="{{ image.image.url }}" alt="" loading="lazy">{% endif %}
+                {% endwith %}
+              </div>
+
+              <div>
+                <p class="card__meta">{{ item.product.get_category_display }}</p>
+                <p class="job__title">
+                  <a href="{% url 'marketplace:product_detail' item.product.pk %}">{{ item.product.name }}</a>
+                </p>
+                {% if item.product.evaluation_score is not None %}
+                  <p class="tiny faint num mt-2">SCORE {{ item.product.evaluation_score }}/100</p>
+                {% endif %}
+              </div>
+
+              <div class="right">
+                <p class="price__now num">{{ currency_symbol }}{{ item.product.price }}</p>
+                <form method="post" action="{% url 'marketplace:remove_from_cart' item.pk %}" class="mt-2">
+                  {% csrf_token %}
+                  <button class="btn btn--quiet btn--sm" type="submit">Remove</button>
+                </form>
+              </div>
+            </article>
+          {% endfor %}
+        </section>
+      {% endif %}
+
+      {% if unavailable %}
+        <section>
+          <p class="eyebrow mb-4">No longer available</p>
+          <div class="stack">
+            {% for item in unavailable %}
+              <article class="job" style="opacity:0.65">
+                <div class="job__thumb">
+                  {% with image=item.product.primary_image %}
+                    {% if image %}<img src="{{ image.image.url }}" alt="" loading="lazy">{% endif %}
+                  {% endwith %}
+                </div>
+                <div>
+                  <p class="job__title">{{ item.product.name }}</p>
+                  <div class="cluster mt-2">
+                    {% include "partials/status_pill.html" with product=item.product %}
+                    <span class="tiny faint">Someone else bought this first.</span>
+                  </div>
+                </div>
+                <div class="right">
+                  <form method="post" action="{% url 'marketplace:remove_from_cart' item.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn--quiet btn--sm" type="submit">Remove</button>
+                  </form>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+    </div>
+
+    <aside>
+      <div class="buybox certificate">
+        <p class="eyebrow">Summary</p>
+
+        <dl class="spec mt-4">
+          <dt>Items</dt><dd class="num">{{ available|length }}</dd>
+          <dt>Total</dt><dd class="num bold">{{ currency_symbol }}{{ total }}</dd>
+          <dt>Balance</dt><dd class="num">{{ currency_symbol }}{{ balance }}</dd>
+        </dl>
+
+        <hr>
+
+        {% if not available %}
+          <button class="btn btn--block" type="button" disabled>Nothing to buy</button>
+        {% elif shortfall %}
+          <div class="form-errors mb-4">
+            You need <span class="num">{{ currency_symbol }}{{ shortfall }}</span> more to check out.
+          </div>
+          <a class="btn btn--primary btn--block" href="{% url 'accounts:wallet' %}">Add credits</a>
+        {% else %}
+          <form method="post" action="{% url 'marketplace:checkout' %}" data-guard-submit>
+            {% csrf_token %}
+            <button class="btn btn--primary btn--block btn--lg" type="submit"
+                    data-busy-label="Placing order…">
+              Place order
+            </button>
+          </form>
+          <p class="tiny faint mt-4">
+            Your credits are held until each item is delivered. Cancel before
+            then for a full refund.
+          </p>
+        {% endif %}
+      </div>
+    </aside>
+  </div>
+{% else %}
+  <div class="empty">
+    <p class="empty__mark">Cart empty</p>
+    <h3>Nothing here yet</h3>
+    <p class="small">Everything in the catalogue has already been graded and scored.</p>
+    <a class="btn btn--primary mt-4" href="{% url 'marketplace:home' %}">Browse listings</a>
+  </div>
+{% endif %}
+{% endblock %}

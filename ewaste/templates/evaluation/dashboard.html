@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Evaluator</p>
+    <h1>{{ current_profile.display_name }}</h1>
+  </div>
+  <a class="btn btn--primary" href="{% url 'evaluation:queue' %}">Open the queue</a>
+</div>
+
+<div class="stats mb-6">
+  <div class="stat">
+    <p class="stat__label">Waiting</p>
+    <p class="stat__value">{{ queue_size }}</p>
+    <p class="stat__note">devices in the queue</p>
+  </div>
+  <div class="stat">
+    <p class="stat__label">Completed</p>
+    <p class="stat__value">{{ completed_count }}</p>
+    <p class="stat__note">by you</p>
+  </div>
+  <div class="stat">
+    <p class="stat__label">Your mean score</p>
+    <p class="stat__value">{% if average_score %}{{ average_score|floatformat:0 }}{% else %}&mdash;{% endif %}</p>
+    <p class="stat__note">out of 100</p>
+  </div>
+</div>
+
+<div class="split">
+  <section class="panel certificate">
+    <p class="eyebrow">Current assignment</p>
+
+    {% if current_job %}
+      <div class="cluster cluster-between mt-4">
+        <div>
+          <h2>{{ current_job.product.name }}</h2>
+          <p class="small muted mt-2">
+            {{ current_job.product.get_category_display }} &middot;
+            claimed {{ current_job.claimed_at|date:"Y-m-d H:i" }}
+          </p>
+        </div>
+        <span class="pill pill--active">In progress</span>
+      </div>
+
+      <div class="btn-row mt-6">
+        <a class="btn btn--primary" href="{% url 'evaluation:current' %}">Record your assessment</a>
+      </div>
+    {% else %}
+      <div class="empty mt-4">
+        <p class="empty__mark">Idle</p>
+        <h3>You have no device in hand</h3>
+        <p class="small">Claim one from the queue to get started.</p>
+        <a class="btn btn--primary mt-4" href="{% url 'evaluation:queue' %}">Browse the queue</a>
+      </div>
+    {% endif %}
+  </section>
+
+  <aside class="panel">
+    <p class="eyebrow">Scoring guide</p>
+    <dl class="spec mt-4">
+      <dt class="num">70-100</dt><dd>Good. Minor cosmetic wear at most.</dd>
+      <dt class="num">40-69</dt><dd>Fair. Visible wear or a noted fault, works fully.</dd>
+      <dt class="num">0-39</dt><dd>Rejected. Never reaches the marketplace.</dd>
+    </dl>
+    <hr>
+    <p class="tiny faint">
+      Your notes are published on the listing exactly as you write them. Buyers
+      read them before deciding.
+    </p>
+  </aside>
+</div>
+{% endblock %}

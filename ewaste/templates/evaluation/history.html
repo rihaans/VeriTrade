@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Evaluator</p>
+    <h1>Your assessments</h1>
+  </div>
+  <a class="btn btn--ghost" href="{% url 'evaluation:queue' %}">Queue</a>
+</div>
+
+{% if page_obj.object_list %}
+  <div class="panel panel--flush">
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Device</th>
+            <th scope="col">Completed</th>
+            <th scope="col" class="num">Score</th>
+            <th scope="col">Outcome</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for job in page_obj %}
+            <tr>
+              <td>{{ job.product.name }}</td>
+              <td class="num tiny">
+                {% if job.completed_at %}{{ job.completed_at|date:"Y-m-d H:i" }}{% else %}&mdash;{% endif %}
+              </td>
+              <td class="num bold">{% if job.score is not None %}{{ job.score }}{% else %}&mdash;{% endif %}</td>
+              <td>
+                {% if job.status == "ABANDONED" %}
+                  <span class="pill pill--muted">Released</span>
+                {% elif job.score >= pass_mark %}
+                  <span class="pill pill--verified">Listed</span>
+                {% else %}
+                  <span class="pill pill--danger">Rejected</span>
+                {% endif %}
+              </td>
+              <td class="small muted">{{ job.notes|truncatechars:70|default:"&mdash;" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% include "partials/pagination.html" with page_obj=page_obj %}
+{% else %}
+  <div class="empty">
+    <p class="empty__mark">No history</p>
+    <h3>You have not completed an assessment yet</h3>
+    <a class="btn btn--primary mt-4" href="{% url 'evaluation:queue' %}">Open the queue</a>
+  </div>
+{% endif %}
+{% endblock %}

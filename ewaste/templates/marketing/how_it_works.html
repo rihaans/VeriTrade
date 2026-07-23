@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-head">
+  <div class="page-head__title">
+    <p class="eyebrow">Reference</p>
+    <h1>How VeriTrade works</h1>
+  </div>
+  <a class="btn btn--primary" href="{% url 'accounts:signup' %}">Create an account</a>
+</div>
+
+<div class="split">
+  <div class="stack-lg">
+    <section>
+      <h2>Grading</h2>
+      <p class="lede mt-4">
+        Every listing is physically assessed before it can be bought. The
+        evaluator records a score out of 100 and written notes, and both appear
+        on the listing exactly as written.
+      </p>
+
+      <div class="panel mt-4">
+        <dl class="spec">
+          <dt>70 &ndash; 100</dt><dd><span class="pill pill--verified">Good</span> Minor cosmetic wear at most.</dd>
+          <dt>40 &ndash; 69</dt><dd><span class="pill pill--pending">Fair</span> Visible wear or a noted fault, still fully working.</dd>
+          <dt>0 &ndash; 39</dt><dd><span class="pill pill--danger">Rejected</span> Never reaches the marketplace.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section>
+      <h2>Payment and escrow</h2>
+      <p class="lede mt-4">
+        The marketplace runs on credits. When a buyer checks out, their credits
+        are debited immediately, but the seller is not paid yet. The money is
+        held until a courier confirms the item was delivered.
+      </p>
+      <p class="mt-4 muted">
+        Cancel before delivery and the buyer is refunded in full and the item
+        goes back on sale. Every movement of credits, in either direction, is
+        written to a ledger you can read on your credits page.
+      </p>
+    </section>
+
+    <section>
+      <h2>Roles</h2>
+      <div class="grid grid-2 mt-4">
+        <div class="panel">
+          <p class="eyebrow">Buyers and sellers</p>
+          <h3 class="mt-4">Members</h3>
+          <p class="small muted mt-4">
+            List devices you no longer need, and buy ones that have already been
+            graded. One account does both.
+          </p>
+          <a class="btn btn--ghost btn--sm mt-4" href="{% url 'accounts:signup' %}">Join as a member</a>
+        </div>
+        <div class="panel">
+          <p class="eyebrow">Operations</p>
+          <h3 class="mt-4">Evaluators &amp; couriers</h3>
+          <p class="small muted mt-4">
+            Evaluators grade incoming devices. Couriers collect from sellers and
+            deliver to buyers, and confirming a delivery is what releases payment.
+          </p>
+          <div class="btn-row mt-4">
+            <a class="btn btn--ghost btn--sm" href="{% url 'accounts:signup_evaluator' %}">Evaluator</a>
+            <a class="btn btn--ghost btn--sm" href="{% url 'accounts:signup_courier' %}">Courier</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="panel certificate">
+    <p class="eyebrow">At a glance</p>
+    <dl class="spec mt-4">
+      <dt>Inspection</dt><dd>Every item, before sale</dd>
+      <dt>Score</dt><dd>0&ndash;100, published</dd>
+      <dt>Pass mark</dt><dd class="num">40</dd>
+      <dt>Payout</dt><dd>On delivery only</dd>
+      <dt>Refunds</dt><dd>Full, until delivered</dd>
+      <dt>Ledger</dt><dd>Every transaction, visible</dd>
+    </dl>
+    <hr>
+    <p class="tiny faint">
+      Credits are a demonstration currency. No payment provider is connected and
+      no real money changes hands.
+    </p>
+  </aside>
+</div>
+{% endblock %}

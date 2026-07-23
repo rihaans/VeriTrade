@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth">
+  <div class="auth__aside">
+    <p class="eyebrow">Registration</p>
+    <h1 style="font-size:var(--size-2xl)">{{ heading }}</h1>
+    <p class="lede mt-4">{{ blurb }}</p>
+
+    <div class="panel certificate mt-6">
+      <p class="eyebrow eyebrow--plain">What happens next</p>
+      {% if role == "EVALUATOR" %}
+        <ol class="flow mt-4 small muted" style="padding-left:1.1rem">
+          <li>Open the evaluation queue and claim a device.</li>
+          <li>Assess it and record a score out of 100.</li>
+          <li>Anything scoring 40 or above goes on sale.</li>
+        </ol>
+      {% elif role == "COURIER" %}
+        <ol class="flow mt-4 small muted" style="padding-left:1.1rem">
+          <li>Pick up an unassigned delivery from the queue.</li>
+          <li>Collect from the seller, deliver to the buyer.</li>
+          <li>Confirming delivery releases the seller's payment.</li>
+        </ol>
+      {% else %}
+        <ol class="flow mt-4 small muted" style="padding-left:1.1rem">
+          <li>Top up your credit balance.</li>
+          <li>Browse graded listings and buy with confidence.</li>
+          <li>List your own devices whenever you like.</li>
+        </ol>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="auth__card">
+    <div class="role-switch mb-6">
+      <a href="{% url 'accounts:signup' %}" {% if role == "MEMBER" %}aria-current="page"{% endif %}>Member</a>
+      <a href="{% url 'accounts:signup_evaluator' %}" {% if role == "EVALUATOR" %}aria-current="page"{% endif %}>Evaluator</a>
+      <a href="{% url 'accounts:signup_courier' %}" {% if role == "COURIER" %}aria-current="page"{% endif %}>Courier</a>
+    </div>
+
+    <h2>{{ heading }}</h2>
+
+    <form method="post" class="mt-6" novalidate>
+      {% csrf_token %}
+      {% include "partials/form_errors.html" with form=form %}
+
+      <div class="field-row field-row--2">
+        {% include "partials/field.html" with field=form.first_name %}
+        {% include "partials/field.html" with field=form.last_name %}
+      </div>
+
+      {% include "partials/field.html" with field=form.username %}
+      {% include "partials/field.html" with field=form.email %}
+      {% include "partials/field.html" with field=form.phone_number %}
+      {% include "partials/field.html" with field=form.password1 %}
+      {% include "partials/field.html" with field=form.password2 %}
+
+      <button class="btn btn--primary btn--block btn--lg mt-6" type="submit">Create account</button>
+    </form>
+
+    <p class="small muted mt-6 center">
+      Already registered? <a href="{% url 'accounts:login' %}">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
